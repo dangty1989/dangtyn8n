@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Blog Đặng Tỵ - AI &amp; Automation</title>
+    <link>https://dangtyn8n.io.vn</link>
+    <description>Hướng dẫn AI Agent, n8n, và Automation cho Doanh Nghiệp</description>
+    <language>vi</language>
+    <copyright>2026 Đặng Tỵ. All rights reserved.</copyright>
+    <lastBuildDate>Wed, 15 Jan 2026 19:30:00 +0700</lastBuildDate>
+    
+    <item>
+      <title>Cách tạo AI Agent bằng n8n - Hướng dẫn từ A-Z</title>
+      <link>https://dangtyn8n.io.vn/blog/ai-agent-n8n-huong-dan</link>
+      <guid isPermaLink="true">https://dangtyn8n.io.vn/blog/ai-agent-n8n-huong-dan</guid>
+      <pubDate>Wed, 15 Jan 2026 19:30:00 +0700</pubDate>
+      <description>Hôm nay mình sẽ hướng dẫn bạn cách xây dựng AI Agent hoàn chỉnh bằng n8n...</description>
+      <content:encoded><![CDATA[
+        <h2>Giới thiệu</h2>
+        <p>Đây là bài hướng dẫn chi tiết...</p>
+      ]]></content:encoded>
+      <category>AI Automation</category>
+      <author>dangducty@gmail.com (Đặng Tỵ)</author>
+    </item>
+  </channel>
+</rss>

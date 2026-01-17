@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Báo cáo hàng ngày | CM Automation</title>
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <style>
+        .form-container {
+            max-width: 600px;
+            margin: 2rem auto;
+            background: var(--glass);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--dark-border);
+            padding: 2rem;
+            border-radius: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            background: var(--dark-surface);
+            border: 1px solid var(--dark-border);
+            color: var(--text-main);
+            outline: none;
+        }
+
+        input:focus {
+            border-color: var(--primary);
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .checkbox-group input {
+            width: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <a href="../dashboard.html" class="logo">🏗️ CM Automation</a>
+            <nav class="nav-links">
+                <a href="../dashboard.html">Dự án</a>
+                <a href="#" class="active">Báo cáo</a>
+            </nav>
+        </header>
+
+        <div class="form-container animate-fade-in">
+            <h2 style="margin-bottom: 2rem; color: var(--primary)">Báo cáo khối lượng & Nhân công</h2>
+
+            <form id="dailyUpdateForm">
+                <div class="form-group">
+                    <label for="project">Dự án</label>
+                    <select id="project" required>
+                        <option value="">Chọn dự án...</option>
+                        <option value="1">Nhà mẫu Sunrise City</option>
+                        <option value="2">Căn hộ Vinhomes Grand Park</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="workType">Loại công việc</label>
+                    <select id="workType" required>
+                        <option value="tuong">Xây tường</option>
+                        <option value="san">Đổ sàn</option>
+                        <option value="son">Sơn bả</option>
+                        <option value="dien">Điện nước</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="volume">Khối lượng hoàn thành (m², m³, ...)</label>
+                    <input type="number" id="volume" step="0.1" required>
+                </div>
+
+                <hr style="border: 0; border-top: 1px solid var(--dark-border); margin: 2rem 0;">
+
+                <h3 style="margin-bottom: 1rem; font-size: 1rem">Thông tin nhân công</h3>
+
+                <div class="form-group">
+                    <label for="worker">Công nhân thực hiện</label>
+                    <select id="worker" required>
+                        <option value="">Chọn công nhân...</option>
+                        <option value="1">Nguyễn Văn A</option>
+                        <option value="2">Trần Thị B</option>
+                    </select>
+                </div>
+
+                <div class="form-group checkbox-group">
+                    <input type="checkbox" id="isDangerous">
+                    <label for="isDangerous" style="margin: 0">Công việc nguy hiểm (+20% phụ cấp)</label>
+                </div>
+
+                <div class="form-group">
+                    <label for="overtime">Số giờ tăng ca</label>
+                    <input type="number" id="overtime" value="0">
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem">Gửi báo cáo</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('dailyUpdateForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            alert('Báo cáo đã được ghi nhận vào hệ thống!');
+            // In real app: send to Google Apps Script / API
+        });
+    </script>
+</body>
+
+</html>

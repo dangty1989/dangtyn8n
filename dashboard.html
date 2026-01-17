@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Construction Dashboard | DangTyn8n Automation</title>
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Sales Banner for Demo -->
+        <div
+            style="background: linear-gradient(90deg, var(--primary), var(--secondary)); padding: 0.75rem; text-align: center; border-radius: 0.5rem; margin-bottom: 1.5rem; font-weight: 700; color: white;">
+            🚀 Đang xem bản Demo - <a href="index.html#contact" style="color: white; text-decoration: underline;">Đăng
+                ký sở hữu hệ thống ngay!</a>
+        </div>
+        <header>
+            <a href="index.html" class="logo">🏗️ CM Automation</a>
+            <nav class="nav-links">
+                <a href="#" class="active">Dự án</a>
+                <a href="forms/daily-update.html">Điểm danh</a>
+                <a href="#">Tài chính</a>
+                <a href="#">Báo cáo</a>
+            </nav>
+            <div style="display: flex; gap: 1rem; align-items: center;">
+                <div id="alertDot"
+                    style="width: 12px; height: 12px; background: var(--danger); border-radius: 50%; box-shadow: 0 0 10px var(--danger); display: none;">
+                </div>
+                <a href="forms/project-form.html" class="btn btn-primary">+ Dự án mới</a>
+            </div>
+        </header>
+
+        <section class="stats-grid">
+            <div class="stat-card animate-fade-in" style="animation-delay: 0.1s">
+                <div class="stat-label">Tổng số dự án</div>
+                <div class="stat-value" id="totalProjects">12</div>
+                <div class="stat-trend trend-up">↑ 2 tháng này</div>
+            </div>
+            <div class="stat-card animate-fade-in" style="animation-delay: 0.2s">
+                <div class="stat-label">Tiến độ trung bình</div>
+                <div class="stat-value" id="avgProgress">74%</div>
+                <div class="stat-trend trend-up">↑ 5% so với tuần trước</div>
+            </div>
+            <div class="stat-card animate-fade-in" style="animation-delay: 0.3s">
+                <div class="stat-label">Tổng ngân sách</div>
+                <div class="stat-value" id="totalBudget">24.5B</div>
+                <div class="stat-trend">VNĐ</div>
+            </div>
+            <div class="stat-card animate-fade-in" style="animation-delay: 0.4s">
+                <div class="stat-label">Chi phí thực tế</div>
+                <div class="stat-value" id="actualCost">18.2B</div>
+                <div class="stat-trend trend-down">↓ Tiết kiệm 3.2%</div>
+            </div>
+        </section>
+
+        <section class="section-header">
+            <h2>Dự án đang triển khai</h2>
+            <div class="filters">
+                <!-- Filters will go here -->
+            </div>
+        </section>
+
+        <div class="project-grid" id="projectGrid">
+            <!-- Project cards will be injected here by JS -->
+            <!-- Sample Card for preview -->
+            <div class="project-card animate-fade-in">
+                <div class="project-header">
+                    <div class="project-title">
+                        <h3>Nhà mẫu Sunrise City</h3>
+                        <div class="project-client">Novaland Group</div>
+                    </div>
+                    <span class="status-badge status-on-track">On Track</span>
+                </div>
+                <div class="project-body">
+                    <div class="progress-container">
+                        <div class="progress-label">
+                            <span>Tiến độ tổng thể</span>
+                            <span>65%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 65%"></div>
+                        </div>
+                    </div>
+                    <div class="project-metrics">
+                        <div class="metric">
+                            <span class="metric-label">Ngân sách</span>
+                            <span class="metric-value">4.2B ₫</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-label">Thực tế</span>
+                            <span class="metric-value">2.8B ₫</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-label">Ngày còn lại</span>
+                            <span class="metric-value">45 ngày</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-label">Nhân sự</span>
+                            <span class="metric-value">24 người</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="project-footer">
+                    <span class="text-muted" style="font-size: 0.875rem">Cập nhật: 2 giờ trước</span>
+                    <a href="#" class="btn" style="padding: 0.5rem; color: var(--primary)">Chi tiết →</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/dashboard.js"></script>
+</body>
+
+</html>

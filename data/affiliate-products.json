@@ -1,0 +1,117 @@
+{
+  "products": [
+    {
+      "name": "HeyGen",
+      "category": "AI Video Generator",
+      "description": "Tạo video AI từ text & hình ảnh. Phù hợp content creator.",
+      "image": "https://www.heygen.com/favicon.ico",
+      "price_usd": 15,
+      "commission": "Affiliate commission",
+      "rating": 0,
+      "reviews": 0,
+      "affiliate_link": "https://www.heygen.com/?sid=rewardful&via=dang-ty",
+      "status": "active"
+    },
+    {
+      "name": "ElevenLabs",
+      "category": "AI Voice & Audio",
+      "description": "Text-to-Speech / Voice AI đa ngôn ngữ, hợp voiceover & podcast.",
+      "image": "https://elevenlabs.io/favicon.ico",
+      "price_usd": 5,
+      "commission": "Affiliate commission",
+      "rating": 0,
+      "reviews": 0,
+      "affiliate_link": "https://try.elevenlabs.io/4x8x1ricbng4",
+      "status": "active"
+    },
+    {
+      "name": "Make (Integromat)",
+      "category": "Workflow Automation",
+      "description": "Nền tảng tự động hoá no-code mạnh, kết nối nhiều app.",
+      "image": "https://cdn.make.com/img/make/favicon.ico",
+      "price_usd": 0,
+      "commission": "Affiliate commission",
+      "rating": 0,
+      "reviews": 0,
+      "affiliate_link": "https://www.make.com/en/register?pc=dangty",
+      "status": "active"
+    },
+    {
+      "name": "Tino VPS",
+      "category": "VPS Hosting",
+      "description": "VPS giá rẻ cho self-host n8n & automation server.",
+      "image": "https://tino.vn/favicon.ico",
+      "price_usd": 0,
+      "commission": "Referral commission",
+      "rating": 0,
+      "reviews": 0,
+      "affiliate_link": "https://tino.vn/vps-gia-re?php=4086",
+      "status": "active"
+    },
+    {
+      "name": "CustomGPT",
+      "category": "AI Agent Builder",
+      "description": "Tạo chatbot/agent từ tài liệu nội bộ, dễ triển khai.",
+      "image": "https://customgpt.ai/favicon.ico",
+      "price_usd": 0,
+      "commission": "Affiliate commission",
+      "rating": 0,
+      "reviews": 0,
+      "affiliate_link": "https://customgpt.ai/api/?fpr=ty92",
+      "status": "active"
+    },
+    {
+      "name": "Lovable",
+      "category": "AI Web Development",
+      "description": "Tạo web app với AI nhanh, phù hợp MVP/landing.",
+      "image": "https://lovable.dev/favicon.ico",
+      "price_usd": 0,
+      "commission": "Affiliate commission",
+      "rating": 0,
+      "reviews": 0,
+      "affiliate_link": "https://lovable.dev/?via=ty-dang",
+      "status": "active"
+    },
+    {
+      "name": "OpenRouter",
+      "category": "AI Model API",
+      "description": "Gateway gọi nhiều model AI (GPT/Claude/Mistral) qua 1 API.",
+      "image": "https://openrouter.ai/favicon.ico",
+      "price_usd": 0,
+      "commission": "Revenue share",
+      "rating": 0,
+      "reviews": 0,
+      "affiliate_link": "https://openrouter.ai/",
+      "status": "active"
+    },
+    {
+      "name": "n8n",
+      "category": "Workflow Automation",
+      "description": "Automation workflow open-source; self-host hoặc cloud.",
+      "image": "https://n8n.io/favicon.ico",
+      "price_usd": 0,
+      "commission": "Partner/Referral (tuỳ chương trình)",
+      "rating": 0,
+      "reviews": 0,
+      "affiliate_link": "https://n8n.io/",
+      "status": "active"
+    },
+    {
+      "name": "VBEE",
+      "category": "AI Voice (VN)",
+      "description": "Text-to-Speech tiếng Việt, dùng cho voice content/CSKH.",
+      "image": "https://vbee.vn/favicon.ico",
+      "price_usd": 0,
+      "commission": "Affiliate commission",
+      "rating": 0,
+      "reviews": 0,
+      "affiliate_link": "https://vbee.vn/?aff=ty89",
+      "status": "active"
+    }
+  ],
+  "metadata": {
+    "active_products": 9,
+    "pending_products": 0,
+    "last_updated": "2026-01-16T08:01:00Z"
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "videos": [
+    {
+      "id": 1,
+      "videoId": "dQw4w9WgXcQ",
+      "title": "N8n AI Agent - Hướng Dẫn Hoàn Toàn Từ A-Z",
+      "slug": "n8n-ai-agent-huong-dan",
+      "description": "Hôm nay mình sẽ hướng dẫn cách xây dựng AI Agent bằng n8n...",
+      "thumbnail": "https://img.youtube.com/vi/dQw4w9WgXcQ/maxresdefault.jpg",
+      "publishedAt": "2026-01-15T10:00:00Z",
+      "duration": 1200,
+      "views": 1250,
+      "author": "Đặng Tỵ",
+      "tags": [
+        "n8n",
+        "AI Agent",
+        "Automation"
+      ],
+      "status": "published"
+    }
+  ],
+  "metadata": {
+    "total": 1,
+    "lastUpdated": "2026-01-15T10:00:00Z"
+  }
+}

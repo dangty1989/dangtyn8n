@@ -1,0 +1,28 @@
+{
+  "communities": [
+    {
+      "id": 1,
+      "name": "Đặng Tỵ Skool Community",
+      "description": "Cộng đồng học AI Automation trực tuyến",
+      "link": "https://skool.com/dangtyn",
+      "platform": "Skool",
+      "members": 1500,
+      "icon": "🎓",
+      "status": "active"
+    },
+    {
+      "id": 2,
+      "name": "AI & Automation Facebook Group",
+      "description": "Nhóm Facebook cho các bạn yêu thích AI và Automation",
+      "link": "https://facebook.com/groups/dangtyn-ai",
+      "platform": "Facebook",
+      "members": 5000,
+      "icon": "👥",
+      "status": "active"
+    }
+  ],
+  "metadata": {
+    "total": 2,
+    "lastUpdated": "2026-01-15T19:30:00Z"
+  }
+}

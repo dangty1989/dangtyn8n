@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="pageTitle">Chi tiết bài viết - DangTyn8n</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.8;
+            color: #2d3748;
+            background: #f7fafc;
+        }
+
+        .header-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .back-link {
+            display: inline-block;
+            background: white;
+            color: #667eea;
+            padding: 10px 20px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-bottom: 20px;
+            transition: all 0.3s;
+        }
+
+        .back-link:hover {
+            background: #667eea;
+            color: white;
+            transform: translateX(-5px);
+        }
+
+        article {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+
+        .article-header {
+            margin-bottom: 30px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .category-badge {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            line-height: 1.3;
+            margin: 20px 0;
+            color: #1a202c;
+        }
+
+        .article-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            color: #718096;
+            font-size: 0.95rem;
+            margin-top: 20px;
+        }
+
+        .article-meta span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .article-image {
+            width: 100%;
+            max-height: 400px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin: 30px 0;
+        }
+
+        .article-content {
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+
+        .article-content h2 {
+            font-size: 1.8rem;
+            margin: 30px 0 15px;
+            color: #2d3748;
+            padding-top: 10px;
+        }
+
+        .article-content h3 {
+            font-size: 1.4rem;
+            margin: 25px 0 12px;
+            color: #4a5568;
+        }
+
+        .article-content p {
+            margin: 15px 0;
+            text-align: justify;
+        }
+
+        .article-content ul,
+        .article-content ol {
+            margin: 15px 0 15px 30px;
+        }
+
+        .article-content li {
+            margin: 10px 0;
+        }
+
+        .article-content strong {
+            color: #2d3748;
+            font-weight: 600;
+        }
+
+        .article-content code {
+            background: #f7fafc;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            color: #e53e3e;
+        }
+
+        .tags-section {
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 2px solid #e2e8f0;
+        }
+
+        .tags-section h3 {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            color: #4a5568;
+        }
+
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .tag {
+            background: #edf2f7;
+            color: #4a5568;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 60px 20px;
+            color: #667eea;
+            font-size: 1.5rem;
+        }
+
+        .error {
+            background: #fed7d7;
+            color: #c53030;
+            padding: 30px;
+            border-radius: 8px;
+            text-align: center;
+            margin: 40px 0;
+        }
+
+        .error h2 {
+            margin-bottom: 15px;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            article {
+                padding: 25px;
+            }
+
+            .article-content {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header-bg">
+        <div class="container">
+            <a href="./index.html" class="back-link">← Quay lại danh sách</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <div id="articleContainer" class="loading">
+            Đang tải bài viết...
+        </div>
+    </div>
+
+    <!-- Local data fallback -->
+    <script src="../data/posts-data.js"></script>
+
+    <script>
+        async function loadArticle() {
+            const container = document.getElementById('articleContainer');
+
+            // Lấy slug từ URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const slug = urlParams.get('slug');
+
+            if (!slug) {
+                container.className = '';
+                container.innerHTML = `
+                    <div class="error">
+                        <h2>❌ Không tìm thấy bài viết</h2>
+                        <p>Vui lòng chọn bài viết từ trang danh sách.</p>
+                        <br>
+                        <a href="./index.html" class="back-link">Quay lại danh sách</a>
+                    </div>
+                `;
+                return;
+            }
+
+            try {
+                let data;
+                try {
+                    const response = await fetch('./posts.json');
+                    if (response.ok) {
+                        data = await response.json();
+                    }
+                } catch (e) {
+                    console.warn('Fetch failed, using local data fallback');
+                    data = window.BLOG_DATA;
+                }
+
+                if (!data) throw new Error('Không thể tải dữ liệu');
+
+                const post = data.posts.find(p => p.slug === slug && p.status === 'published');
+
+                if (!post) {
+                    throw new Error('Bài viết không tồn tại hoặc chưa được xuất bản');
+                }
+
+                // Cập nhật tiêu đề trang
+                document.getElementById('pageTitle').textContent = post.title + ' - DangTyn8n';
+
+                // Hiển thị bài viết
+                container.className = '';
+                container.innerHTML = `
+                    <article>
+                        <div class="article-header">
+                            <span class="category-badge">${post.category}</span>
+                            <h1>${post.title}</h1>
+                            <div class="article-meta">
+                                <span>👤 ${post.author}</span>
+                                <span>📅 ${formatDate(post.date)}</span>
+                                <span>⏱️ ${post.readTime} phút đọc</span>
+                            </div>
+                        </div>
+                        
+                        ${post.image ? `<img src="${post.image}" alt="${post.title}" class="article-image" onerror="this.style.display='none'">` : ''}
+                        
+                        <div class="article-content">
+                            ${post.content}
+                        </div>
+                        
+                        ${post.tags && post.tags.length > 0 ? `
+                            <div class="tags-section">
+                                <h3>🏷️ Tags</h3>
+                                <div class="tags">
+                                    ${post.tags.map(tag => `<span class="tag">#${tag}</span>`).join('')}
+                                </div>
+                            </div>
+                        ` : ''}
+                    </article>
+                `;
+
+            } catch (error) {
+                container.className = '';
+                container.innerHTML = `
+                    <div class="error">
+                        <h2>❌ Lỗi</h2>
+                        <p>${error.message}</p>
+                        <br>
+                        <a href="./index.html" class="back-link">Quay lại danh sách</a>
+                    </div>
+                `;
+            }
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('vi-VN', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+        }
+
+        // Tải bài viết khi trang load
+        loadArticle();
+    </script>
+</body>
+
+</html>
