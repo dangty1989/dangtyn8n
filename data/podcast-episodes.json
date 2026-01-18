@@ -1,6 +1,29 @@
 {
   "episodes": [
     {
+      "id": "ep-be-nho-cach-xay-ai-agent-n8n-2511",
+      "title": "Bẻ nhỏ cách xây AI Agent n8n",
+      "slug": "be-nho-cach-xay-ai-agent-n8n-2511",
+      "description": "Podcast: Bẻ nhỏ cách xây AI Agent n8n. \n\nĐược tải lên tự động từ hệ thống n8n & Google Drive vào ngày 18/1/2026.",
+      "audioUrl": "https://drive.google.com/uc?export=download&id=1SgDNqk05RES8TN4TkFlZg6ixVegoQmmC",
+      "audioFile": "Bẻ_nhỏ_cách_xây_AI_Agent_n8n.m4a",
+      "audioFileId": "1SgDNqk05RES8TN4TkFlZg6ixVegoQmmC",
+      "tags": [
+        "Podcast",
+        "Automation",
+        "n8n"
+      ],
+      "categories": [
+        "Podcasts",
+        "Technology"
+      ],
+      "date": "2026-01-18",
+      "duration": 15,
+      "transcript": "",
+      "status": "published",
+      "published": true
+    },
+    {
       "id": "ep-be-nho-cach-xay-ai-agent-n8n-524201",
       "title": "Bẻ nhỏ cách xây AI Agent n8n",
       "slug": "be-nho-cach-xay-ai-agent-n8n",
@@ -35,7 +58,7 @@
     }
   ],
   "metadata": {
-    "total": 2,
-    "lastUpdated": "2026-01-18T15:18:47.021Z"
+    "total": 3,
+    "lastUpdated": "2026-01-18T15:30:32.512Z"
   }
 }
