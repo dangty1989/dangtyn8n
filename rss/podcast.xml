@@ -42,5 +42,16 @@
       <itunes:image href="https://dangtyn8n.io.vn/assets/images/blog-1.jpg"/>
       <enclosure url="https://dangtyn8n.io.vn/assets/audio/ep1-n8n-intro.mp3" length="48000000" type="audio/mpeg"/>
     </item>
+  
+    <item>
+      <title>atypodcast001mp3_36f760d1-2050-49b1-b93c-27207f5ca4f9</title>
+      <description><![CDATA[Nội dung chia sẻ từ Telegram]]></description>
+      <pubDate>Sun, 18 Jan 2026 00:00:00 GMT</pubDate>
+      <enclosure url="https://drive.google.com/uc?export=download&id=11woBGbpQFckKBZvVDpbDlRSTUXnFFGIa" length="1" type="audio/mpeg" />
+      <guid isPermaLink="false">ep-atypodcast001mp336f760d1-2050-49b1-b93c-27207f5ca4f9-913229</guid>
+      <itunes:duration>10:00</itunes:duration>
+      <itunes:episodeType>full</itunes:episodeType>
+      <itunes:explicit>false</itunes:explicit>
+    </item>
   </channel>
 </rss>
