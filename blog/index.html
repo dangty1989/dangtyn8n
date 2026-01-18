@@ -204,16 +204,18 @@
             try {
                 let data;
                 try {
-                    const response = await fetch('./posts.json');
+                    const response = await fetch('../data/posts.json');
                     if (response.ok) {
                         data = await response.json();
+                    } else {
+                        throw new Error('Fetch failed');
                     }
                 } catch (e) {
-                    console.warn('Fetch failed, using local data fallback');
+                    console.warn('Blog fetch failed, using local data fallback');
                     data = window.BLOG_DATA;
                 }
 
-                if (!data) throw new Error('Không thể tải dữ liệu blog');
+                if (!data || !data.posts) throw new Error('Không thể tải dữ liệu blog');
                 const posts = data.posts.filter(post => post.status === 'published');
 
                 if (posts.length === 0) {
