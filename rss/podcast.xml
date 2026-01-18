@@ -53,5 +53,18 @@
       <itunes:episodeType>full</itunes:episodeType>
       <itunes:explicit>false</itunes:explicit>
     </item>
+  
+    <item>
+      <title>Bẻ nhỏ cách xây AI Agent n8n</title>
+      <description><![CDATA[Podcast: Bẻ nhỏ cách xây AI Agent n8n. 
+
+Được tải lên tự động từ hệ thống n8n & Google Drive vào ngày 18/1/2026.]]></description>
+      <pubDate>Sun, 18 Jan 2026 00:00:00 GMT</pubDate>
+      <enclosure url="https://drive.google.com/uc?export=download&id=1SgDNqk05RES8TN4TkFlZg6ixVegoQmmC" length="1" type="audio/mpeg" />
+      <guid isPermaLink="false">ep-be-nho-cach-xay-ai-agent-n8n-229671</guid>
+      <itunes:duration>15:00</itunes:duration>
+      <itunes:episodeType>full</itunes:episodeType>
+      <itunes:explicit>false</itunes:explicit>
+    </item>
   </channel>
 </rss>
