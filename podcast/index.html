@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Podcast - DangTyn8n AI Agent & Automation</title>
+    <style>
+        :root {
+            --primary: #facc15;
+            /* Safety Yellow */
+            --primary-dark: #ca8a04;
+            --slate-900: #0f172a;
+            --slate-800: #1e293b;
+            --slate-700: #334155;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background-color: var(--slate-900);
+            color: var(--text-main);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            text-align: center;
+            padding: 4rem 0;
+            background: linear-gradient(to bottom, rgba(250, 204, 21, 0.1), transparent);
+            border-bottom: 1px solid var(--slate-800);
+            margin-bottom: 3rem;
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+
+        .rss-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--primary);
+            border-radius: 2rem;
+            transition: all 0.3s;
+            margin-top: 1rem;
+        }
+
+        .rss-link:hover {
+            background: var(--primary);
+            color: var(--slate-900);
+        }
+
+        .podcast-grid {
+            display: grid;
+            gap: 2rem;
+        }
+
+        .podcast-card {
+            background: var(--slate-800);
+            border-radius: 1rem;
+            padding: 2rem;
+            display: flex;
+            gap: 2rem;
+            border: 1px solid var(--slate-700);
+            transition: transform 0.3s;
+        }
+
+        .podcast-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+        }
+
+        .podcast-icon {
+            font-size: 3.5rem;
+            background: var(--slate-900);
+            width: 120px;
+            height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 1rem;
+            flex-shrink: 0;
+        }
+
+        .podcast-info {
+            flex-grow: 1;
+        }
+
+        .podcast-meta {
+            font-size: 0.875rem;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .podcast-title {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            line-height: 1.3;
+        }
+
+        .podcast-desc {
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+            font-size: 1rem;
+        }
+
+        audio {
+            width: 100%;
+            height: 40px;
+            border-radius: 0.5rem;
+        }
+
+        .back-home {
+            display: inline-block;
+            color: var(--text-muted);
+            text-decoration: none;
+            margin-bottom: 2rem;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .back-home:hover {
+            color: var(--primary);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 4rem;
+            font-size: 1.25rem;
+            color: var(--text-muted);
+        }
+
+        @media (max-width: 768px) {
+            .podcast-card {
+                flex-direction: column;
+                gap: 1.5rem;
+            }
+
+            .podcast-icon {
+                width: 80px;
+                height: 80px;
+                font-size: 2.5rem;
+            }
+
+            h1 {
+                font-size: 2.25rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="container">
+            <a href="../index.html" class="back-home">← Quay lại trang chủ</a>
+            <h1>🎙️ Podcast Automation</h1>
+            <p>Chia sẻ thực chiến về AI Agent & n8n trong ngành Xây dựng</p>
+            <a href="../rss/podcast.xml" target="_blank" class="rss-link">
+                <span>📻</span> Đăng ký RSS Feed
+            </a>
+        </div>
+    </header>
+
+    <main class="container">
+        <div id="podcastContainer" class="loading">
+            Đang tải các tập podcast...
+        </div>
+    </main>
+
+    <script src="../data/posts-data.js"></script>
+    <script>
+        async function loadPodcasts() {
+            const container = document.getElementById('podcastContainer');
+            try {
+                let data;
+                try {
+                    const response = await fetch('../data/podcast-episodes.json');
+                    if (response.ok) {
+                        data = await response.json();
+                    }
+                } catch (e) {
+                    console.warn('Podcast fetch failed, using local data fallback');
+                    data = window.PODCAST_DATA;
+                }
+
+                if (!data) throw new Error('Không thể tải dữ liệu podcast');
+
+                const episodes = data.episodes || data;
+
+                if (episodes.length === 0) {
+                    container.innerHTML = '<p style="text-align: center;">Chưa có tập podcast nào được xuất bản.</p>';
+                    return;
+                }
+
+                container.className = 'podcast-grid';
+                container.innerHTML = episodes.map(ep => `
+                    <div class="podcast-card animate-fade-in">
+                        <div class="podcast-icon">🎙️</div>
+                        <div class="podcast-info">
+                            <div class="podcast-meta">${ep.date} • ${ep.duration} phút</div>
+                            <h2 class="podcast-title">${ep.title}</h2>
+                            <p class="podcast-desc">${ep.description}</p>
+                            <audio controls>
+                                <source src="${ep.audioUrl}" type="audio/mpeg">
+                                Trình duyệt của bạn không hỗ trợ phát âm thanh.
+                            </audio>
+                        </div>
+                    </div>
+                `).join('');
+
+            } catch (error) {
+                console.error(error);
+                container.innerHTML = `<p style="color: #ef4444; text-align: center;">❌ Lỗi: ${error.message}</p>`;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadPodcasts);
+    </script>
+</body>
+
+</html>

@@ -21,6 +21,7 @@
         <a href="#tech-stack">Công nghệ</a>
         <a href="#solutions">Giải pháp</a>
         <a href="#usecases">Ứng dụng</a>
+        <a href="podcast/index.html">Podcast</a>
         <a href="blog/index.html">Blog</a>
         <a href="dashboard.html" class="btn-demo">Xem Demo</a>
       </nav>
@@ -174,6 +175,22 @@
           <h3>Sự chuyên nghiệp</h3>
           <p>Cửa hàng nhỏ nhưng có quy trình báo giá, nhắc nợ như tập đoàn lớn → Tăng niềm tin từ nhà thầu.</p>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LATEST PODCASTS SECTION -->
+  <section id="podcasts" class="section" style="background: rgba(15, 23, 42, 0.3);">
+    <div class="container">
+      <div class="section-header">
+        <h2>Podcast <span class="gradient-text">Mới Nhất</span></h2>
+        <p>Nghe chia sẻ về n8n và AI Automation trên đường đi</p>
+      </div>
+      <div id="latest-podcasts-grid" class="tech-grid">
+        <!-- Podcasts will be loaded here via JS -->
+      </div>
+      <div style="text-align: center; margin-top: 3rem;">
+        <a href="podcast/index.html" class="btn btn-primary">Xem tất cả tập podcast →</a>
       </div>
     </div>
   </section>
@@ -386,9 +403,9 @@
         </div>
         <div class="link-group">
           <h4>Liên hệ</h4>
-          <a href="#">Zalo: 09xx.xxx.xxx</a>
-          <a href="#">Email: dangducty@gmail.com</a>
-          <a href="#">Facebook</a>
+          <a href="https://zalo.me/09xxxxxxxx" target="_blank">Zalo: 09xx.xxx.xxx</a>
+          <a href="mailto:dangducty@gmail.com">Email: dangducty@gmail.com</a>
+          <a href="https://facebook.com/dangty.automation" target="_blank">Facebook</a>
         </div>
       </div>
     </div>
@@ -404,6 +421,9 @@
     // Simple script to load latest 3 posts on homepage
     async function loadLatestPosts() {
       const grid = document.getElementById('latest-posts-grid');
+      const podcastGrid = document.getElementById('latest-podcasts-grid');
+
+      // Load Blogs
       try {
         let data;
         try {
@@ -412,24 +432,56 @@
             data = await response.json();
           }
         } catch (e) {
-          console.warn('Fetch failed, using local data fallback');
+          console.warn('Blog fetch failed, using local data fallback');
           data = window.BLOG_DATA;
         }
 
-        if (!data) return;
-
-        const latest = data.posts.slice(0, 3);
-        grid.innerHTML = latest.map(post => `
-          <div class="tech-card" style="cursor: pointer; text-align: left;" onclick="window.location.href='blog/detail.html?slug=${post.slug}'">
-            <div style="height: 150px; background: var(--slate-dark); border-radius: 0.5rem; margin-bottom: 1rem; overflow: hidden;">
-                <img src="${post.image}" alt="${post.title}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='/api/placeholder/400/200'">
+        if (data && data.posts) {
+          const latest = data.posts.slice(0, 3);
+          grid.innerHTML = latest.map(post => `
+            <div class="tech-card" style="cursor: pointer; text-align: left;" onclick="window.location.href='blog/detail.html?slug=${post.slug}'">
+              <div style="height: 150px; background: var(--slate-dark); border-radius: 0.5rem; margin-bottom: 1rem; overflow: hidden;">
+                  <img src="${post.image}" alt="${post.title}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='https://api.placeholder/400/200'">
+              </div>
+              <div style="font-size: 0.8rem; color: var(--yellow); margin-bottom: 0.5rem;">${post.date} • ${post.category}</div>
+              <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem; line-height: 1.4;">${post.title}</h3>
+              <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.5;">${post.excerpt || post.description}</p>
             </div>
-            <div style="font-size: 0.8rem; color: var(--yellow); margin-bottom: 0.5rem;">${post.date} • ${post.category}</div>
-            <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem; line-height: 1.4;">${post.title}</h3>
-            <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.5;">${post.excerpt}</p>
-          </div>
-        `).join('');
+          `).join('');
+        }
       } catch (e) { console.error('Error loading posts:', e); }
+
+      // Load Podcasts
+      try {
+        let podcastData;
+        try {
+          const response = await fetch('data/podcast-episodes.json');
+          if (response.ok) {
+            podcastData = await response.json();
+          }
+        } catch (e) {
+          console.warn('Podcast fetch failed, using local data fallback');
+          podcastData = window.PODCAST_DATA;
+        }
+
+        if (podcastData) {
+          const episodes = podcastData.episodes || podcastData;
+          const latest = episodes.slice(0, 3);
+          podcastGrid.innerHTML = latest.map(ep => `
+            <div class="tech-card" style="text-align: left;">
+              <div style="height: 150px; background: var(--slate-dark); border-radius: 0.5rem; margin-bottom: 1rem; display: flex; align-items: center; justify-content: center; font-size: 3rem;">
+                🎙️
+              </div>
+              <div style="font-size: 0.8rem; color: var(--yellow); margin-bottom: 0.5rem;">${ep.date} • ${ep.duration} phút</div>
+              <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem; line-height: 1.4;">${ep.title}</h3>
+              <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 1rem;">${ep.description}</p>
+              <audio controls style="width: 100%; height: 32px;">
+                <source src="${ep.audioUrl}" type="audio/mpeg">
+              </audio>
+            </div>
+          `).join('');
+        }
+      } catch (e) { console.error('Error loading podcasts:', e); }
     }
     loadLatestPosts();
   </script>

@@ -1,24 +1,6 @@
 {
   "episodes": [
     {
-      "id": "ep-atypodcast001mp336f760d1-2050-49b1-b93c-27207f5ca4f9-913229",
-      "title": "atypodcast001mp3_36f760d1-2050-49b1-b93c-27207f5ca4f9",
-      "slug": "atypodcast001mp336f760d1-2050-49b1-b93c-27207f5ca4f9",
-      "description": "Nội dung chia sẻ từ Telegram",
-      "audioUrl": "https://drive.google.com/uc?export=download&id=11woBGbpQFckKBZvVDpbDlRSTUXnFFGIa",
-      "audioFile": "atypodcast001mp3_36f760d1-2050-49b1-b93c-27207f5ca4f9.mp3",
-      "audioFileId": "11woBGbpQFckKBZvVDpbDlRSTUXnFFGIa",
-      "tags": [],
-      "categories": [
-        "Podcasts",
-        "Technology"
-      ],
-      "date": "2026-01-18",
-      "duration": 10,
-      "transcript": "",
-      "published": true
-    },
-    {
       "id": 1,
       "number": 1,
       "title": "N8n Là Gì? Cách Dùng n8n Để Tự Động Hoá Kinh Doanh",
@@ -26,13 +8,13 @@
       "description": "Trong tập này, mình giới thiệu n8n là gì, tại sao lại cần nó, và cách bắt đầu sử dụng.",
       "date": "2026-01-15",
       "duration": 2400,
-      "audioUrl": "https://drive.google.com/uc?export=download&id=YOUR_FILE_ID",
+      "audioUrl": "https://drive.google.com/uc?export=download&id=1C0yD7E4U-oA_R-v-B-C-k-U-j-F-E-L-R",
       "transcript": "Xin chào các bạn, tôi là Đặng Tỵ...",
       "status": "published"
     }
   ],
   "metadata": {
-    "total": 2,
-    "lastUpdated": "2026-01-18T10:24:59.698Z"
+    "total": 1,
+    "lastUpdated": "2026-01-15T10:00:00Z"
   }
 }

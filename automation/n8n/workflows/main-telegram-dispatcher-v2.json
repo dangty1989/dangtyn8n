@@ -1,0 +1,336 @@
+{
+    "name": "Main Telegram Dispatcher v2",
+    "nodes": [
+        {
+            "parameters": {
+                "updates": [
+                    "message"
+                ],
+                "additionalFields": {
+                    "download": true,
+                    "imageSize": "large"
+                }
+            },
+            "id": "telegram-trigger",
+            "name": "Listen for incoming events",
+            "type": "n8n-nodes-base.telegramTrigger",
+            "position": [
+                0,
+                400
+            ],
+            "webhookId": "322dce18-f93e-4f86-b9b1-3305519b7834",
+            "typeVersion": 1,
+            "credentials": {
+                "telegramApi": {
+                    "id": "EW2xjt48g5VAJ0M2",
+                    "name": "Telegram account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "jsCode": "// ==========================================\n// NODE: Parse Telegram Message\n// Chuẩn hóa input cho AI Agent và subworkflows\n// ==========================================\n\nconst item = $input.first();\nconst root = item?.json ?? {};\nconst msg = root.message ?? root;\n\n// Text/caption\nconst text = (msg.text ?? msg.caption ?? '').toString();\n\n// Default output\nlet type = 'unknown';\nlet fileId = null;\nlet fileName = null;\nlet mimeType = null;\nlet fileSize = null;\n\n// Helpers\nconst getLowerName = (name) => (name ?? '').toString().toLowerCase();\nconst isAudioExt = (n) =>\n  n.endsWith('.m4a') || n.endsWith('.mp3') || n.endsWith('.wav') || \n  n.endsWith('.aac') || n.endsWith('.ogg') || n.endsWith('.flac') || n.endsWith('.oga');\nconst isTextExt = (n) => n.endsWith('.md') || n.endsWith('.txt');\nconst isVideoExt = (n) => n.endsWith('.mp4') || n.endsWith('.mov') || n.endsWith('.avi') || n.endsWith('.mkv');\nconst isImageExt = (n) => n.endsWith('.jpg') || n.endsWith('.jpeg') || n.endsWith('.png') || n.endsWith('.webp');\n\ntry {\n  // Voice note\n  if (msg.voice?.file_id) {\n    type = 'audio';\n    fileId = msg.voice.file_id;\n    fileName = 'voice_' + Date.now() + '.oga';\n    mimeType = msg.voice.mime_type ?? 'audio/ogg';\n    fileSize = msg.voice.file_size ?? null;\n\n  // Audio (music/podcast)\n  } else if (msg.audio?.file_id) {\n    type = 'audio';\n    fileId = msg.audio.file_id;\n    fileName = msg.audio.file_name ?? 'audio_' + Date.now() + '.mp3';\n    mimeType = msg.audio.mime_type ?? 'audio/mpeg';\n    fileSize = msg.audio.file_size ?? null;\n\n  // Video\n  } else if (msg.video?.file_id) {\n    type = 'video';\n    fileId = msg.video.file_id;\n    fileName = msg.video.file_name ?? 'video_' + Date.now() + '.mp4';\n    mimeType = msg.video.mime_type ?? 'video/mp4';\n    fileSize = msg.video.file_size ?? null;\n\n  // Photo (array nhiều size - lấy size lớn nhất)\n  } else if (Array.isArray(msg.photo) && msg.photo.length) {\n    type = 'photo';\n    const best = msg.photo[msg.photo.length - 1];\n    fileId = best?.file_id ?? null;\n    fileName = 'photo_' + Date.now() + '.jpg';\n    mimeType = 'image/jpeg';\n    fileSize = best?.file_size ?? null;\n\n  // Document (m4a/mp3/pdf/zip/md/txt...)\n  } else if (msg.document?.file_id) {\n    fileId = msg.document.file_id;\n    fileName = msg.document.file_name ?? 'file_' + Date.now();\n    mimeType = msg.document.mime_type ?? 'application/octet-stream';\n    fileSize = msg.document.file_size ?? null;\n\n    const n = getLowerName(fileName);\n    if (isAudioExt(n)) type = 'audio';\n    else if (isTextExt(n)) type = 'text';\n    else if (isVideoExt(n)) type = 'video';\n    else if (isImageExt(n)) type = 'photo';\n    else type = 'document';\n\n  // Plain text (Check for Google Docs Link)\n  } else if (text) {\n    const docMatch = text.match(/docs\\.google\\.com\\/document\\/d\\/([a-zA-Z0-9_-]+)/);\n    if (docMatch && docMatch[1]) {\n      type = 'text';\n      root.googleDocId = docMatch[1];\n    } else {\n      type = 'text';\n    }\n  }\n} catch (e) {\n  type = 'unknown';\n}\n\n// Output chuẩn cho AI Agent và subworkflows\nreturn [{\n  json: {\n    // Loại nội dung\n    type: type,\n    \n    // Nội dung văn bản (text hoặc caption)\n    text: text,\n    googleDocId: root.googleDocId || null,\n    title: text.split('\\n')[0]?.slice(0, 120) || fileName?.replace(/\\.[^/.]+$/, '') || '',\n\n    content: text,\n    \n    // Thông tin file (để truyền sang subworkflow)\n    fileId: fileId,\n    fileName: fileName,\n    mimeType: mimeType,\n    fileSize: fileSize,\n    \n    // Metadata để gửi phản hồi\n    chatId: msg.chat?.id ?? null,\n    messageId: msg.message_id ?? null,\n    userId: msg.from?.id ?? null,\n    userName: msg.from?.first_name ?? 'User'\n  }\n}];"
+            },
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                224,
+                400
+            ],
+            "id": "parse-message",
+            "name": "Parse Telegram Message"
+        },
+        {
+            "parameters": {
+                "model": "gpt-4o-mini",
+                "options": {
+                    "maxTokens": 4000,
+                    "temperature": 0.3
+                }
+            },
+            "id": "openai-model",
+            "name": "OpenAI Chat Model",
+            "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+            "position": [
+                448,
+                640
+            ],
+            "typeVersion": 1,
+            "credentials": {
+                "openAiApi": {
+                    "id": "7Apw8wl9s10GnA8d",
+                    "name": "OpenAi account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "promptType": "define",
+                "text": "={{ JSON.stringify($json) }}",
+                "options": {
+                    "systemMessage": "Bạn là AI Agent điều phối nội dung từ Telegram sang website DangTyn8n (GitHub Pages).\n\n## INPUT\nBạn sẽ nhận JSON từ node trước với các field:\n- type: \"text\" | \"audio\" | \"video\" | \"photo\" | \"document\" | \"unknown\"\n- text: nội dung văn bản hoặc caption\n- title: tiêu đề rút gọn từ text\n- fileId, fileName, mimeType, fileSize (nếu có file)\n- chatId, messageId, userId, userName\n\n## TOOLS CÓ SẴN\n1. **Blog Publisher v2**: Xuất bản bài blog lên GitHub Pages\n   - Dùng khi: type = \"text\" HOẶC file là .md/.txt\n   - Input cần truyền: title, content, fileId (nếu có), fileName, chatId\n\n2. **Podcast Publisher v2**: Xuất bản podcast episode\n   - Dùng khi: type = \"audio\" (voice, .m4a, .mp3, .wav...)\n   - Input cần truyền: fileId, fileName, title (từ caption/text), chatId\n\n## QUY TẮC CHỌN TOOL\n- type = \"text\" → Blog Publisher v2\n- type = \"audio\" → Podcast Publisher v2\n- type = \"document\" với .md/.txt → Blog Publisher v2\n- type = \"document\" với audio → Podcast Publisher v2\n- type = \"video\" / \"photo\" → Trả lời: \"📸 Đã nhận media. Hiện chưa có tool xử lý video/ảnh.\"\n- type = \"unknown\" → Hỏi: \"Bạn muốn publish blog hay podcast?\"\n\n## QUAN TRỌNG\n- Luôn truyền ĐẦY ĐỦ các field: fileId, fileName, title, content, chatId\n- Không bịa link. Chỉ trả link nếu tool output trả về.\n- Mỗi lần xử lý chỉ gọi 1 tool.\n- Sau khi tool chạy xong, trả lời ngắn gọn bằng tiếng Việt với link kết quả.\n- Nếu thiếu thông tin quan trọng, hỏi lại 1 câu ngắn."
+                }
+            },
+            "type": "@n8n/n8n-nodes-langchain.agent",
+            "typeVersion": 3.1,
+            "position": [
+                448,
+                400
+            ],
+            "id": "ai-agent",
+            "name": "AI Agent Dispatcher"
+        },
+        {
+            "parameters": {
+                "description": "Dùng tool này khi người dùng gửi văn bản hoặc file .md/.txt để xuất bản blog lên GitHub Pages.\n\nInput schema:\n- title (string): Tiêu đề bài viết\n- content (string): Nội dung bài viết (markdown/text)\n- fileId (string, optional): Telegram file_id nếu gửi file\n- fileName (string, optional): Tên file gốc\n- tags (array, optional): Danh sách tags\n- chatId (number): Chat ID để gửi phản hồi\n\nOutput: success, postUrl, postId, postSlug, postTitle, message",
+                "workflowId": {
+                    "__rl": true,
+                    "value": "REPLACE_WITH_BLOG_WORKFLOW_ID",
+                    "mode": "id"
+                },
+                "workflowInputs": {
+                    "mappingMode": "defineBelow",
+                    "value": {
+                        "title": "={{ $json.title }}",
+                        "content": "={{ $json.content || $json.text }}",
+                        "fileId": "={{ $json.fileId }}",
+                        "fileName": "={{ $json.fileName }}",
+                        "chatId": "={{ $json.chatId }}"
+                    },
+                    "matchingColumns": [],
+                    "schema": [
+                        {
+                            "id": "title",
+                            "displayName": "title",
+                            "required": false,
+                            "defaultMatch": false,
+                            "display": true,
+                            "type": "string",
+                            "canBeUsedToMatch": true
+                        },
+                        {
+                            "id": "content",
+                            "displayName": "content",
+                            "required": false,
+                            "defaultMatch": false,
+                            "display": true,
+                            "type": "string",
+                            "canBeUsedToMatch": true
+                        },
+                        {
+                            "id": "fileId",
+                            "displayName": "fileId",
+                            "required": false,
+                            "defaultMatch": false,
+                            "display": true,
+                            "type": "string",
+                            "canBeUsedToMatch": true
+                        },
+                        {
+                            "id": "fileName",
+                            "displayName": "fileName",
+                            "required": false,
+                            "defaultMatch": false,
+                            "display": true,
+                            "type": "string",
+                            "canBeUsedToMatch": true
+                        },
+                        {
+                            "id": "chatId",
+                            "displayName": "chatId",
+                            "required": false,
+                            "defaultMatch": false,
+                            "display": true,
+                            "type": "number",
+                            "canBeUsedToMatch": true
+                        }
+                    ],
+                    "attemptToConvertTypes": true,
+                    "convertFieldsToString": false
+                }
+            },
+            "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+            "typeVersion": 2.2,
+            "position": [
+                624,
+                640
+            ],
+            "id": "tool-blog",
+            "name": "Blog Publisher v2"
+        },
+        {
+            "parameters": {
+                "description": "Dùng tool này khi người dùng gửi audio/voice để xuất bản podcast episode.\n\nInput schema:\n- fileId (string, required): Telegram file_id của audio\n- fileName (string): Tên file audio\n- title (string): Tiêu đề episode (từ caption hoặc fileName)\n- description (string, optional): Mô tả episode\n- chatId (number): Chat ID để gửi phản hồi\n\nOutput: success, episodeUrl, audioUrl, rssFeedUrl, message",
+                "workflowId": {
+                    "__rl": true,
+                    "value": "REPLACE_WITH_PODCAST_WORKFLOW_ID",
+                    "mode": "id"
+                },
+                "workflowInputs": {
+                    "mappingMode": "defineBelow",
+                    "value": {
+                        "fileId": "={{ $json.fileId }}",
+                        "fileName": "={{ $json.fileName }}",
+                        "title": "={{ $json.title || $json.fileName?.replace(/\\.[^/.]+$/, '') }}",
+                        "description": "={{ $json.text }}",
+                        "chatId": "={{ $json.chatId }}"
+                    },
+                    "matchingColumns": [],
+                    "schema": [
+                        {
+                            "id": "fileId",
+                            "displayName": "fileId",
+                            "required": true,
+                            "defaultMatch": false,
+                            "display": true,
+                            "type": "string",
+                            "canBeUsedToMatch": true
+                        },
+                        {
+                            "id": "fileName",
+                            "displayName": "fileName",
+                            "required": false,
+                            "defaultMatch": false,
+                            "display": true,
+                            "type": "string",
+                            "canBeUsedToMatch": true
+                        },
+                        {
+                            "id": "title",
+                            "displayName": "title",
+                            "required": false,
+                            "defaultMatch": false,
+                            "display": true,
+                            "type": "string",
+                            "canBeUsedToMatch": true
+                        },
+                        {
+                            "id": "description",
+                            "displayName": "description",
+                            "required": false,
+                            "defaultMatch": false,
+                            "display": true,
+                            "type": "string",
+                            "canBeUsedToMatch": true
+                        },
+                        {
+                            "id": "chatId",
+                            "displayName": "chatId",
+                            "required": false,
+                            "defaultMatch": false,
+                            "display": true,
+                            "type": "number",
+                            "canBeUsedToMatch": true
+                        }
+                    ],
+                    "attemptToConvertTypes": true,
+                    "convertFieldsToString": false
+                }
+            },
+            "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+            "typeVersion": 2.2,
+            "position": [
+                816,
+                640
+            ],
+            "id": "tool-podcast",
+            "name": "Podcast Publisher v2"
+        },
+        {
+            "parameters": {
+                "chatId": "={{ $('Parse Telegram Message').first().json.chatId }}",
+                "text": "={{ $json.output }}",
+                "additionalFields": {
+                    "parse_mode": "Markdown"
+                }
+            },
+            "id": "telegram-reply",
+            "name": "Telegram: Send Reply",
+            "type": "n8n-nodes-base.telegram",
+            "typeVersion": 1.2,
+            "position": [
+                672,
+                400
+            ],
+            "credentials": {
+                "telegramApi": {
+                    "id": "EW2xjt48g5VAJ0M2",
+                    "name": "Telegram account"
+                }
+            }
+        }
+    ],
+    "connections": {
+        "Listen for incoming events": {
+            "main": [
+                [
+                    {
+                        "node": "Parse Telegram Message",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Parse Telegram Message": {
+            "main": [
+                [
+                    {
+                        "node": "AI Agent Dispatcher",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "OpenAI Chat Model": {
+            "ai_languageModel": [
+                [
+                    {
+                        "node": "AI Agent Dispatcher",
+                        "type": "ai_languageModel",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Blog Publisher v2": {
+            "ai_tool": [
+                [
+                    {
+                        "node": "AI Agent Dispatcher",
+                        "type": "ai_tool",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Podcast Publisher v2": {
+            "ai_tool": [
+                [
+                    {
+                        "node": "AI Agent Dispatcher",
+                        "type": "ai_tool",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "AI Agent Dispatcher": {
+            "main": [
+                [
+                    {
+                        "node": "Telegram: Send Reply",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    },
+    "pinData": {},
+    "meta": {
+        "templateCredsSetupCompleted": true,
+        "instanceId": "80ff9b742c2b1d53f6055db1f4f1fadda9dee1113090f9bbb8307bf1dbd0b590"
+    }
+}

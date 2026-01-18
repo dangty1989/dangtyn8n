@@ -27,15 +27,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
             `;
 
-            // Optional: Send to Google Apps Script or CRM
-            /*
             try {
-                await fetch('YOUR_APPS_SCRIPT_URL', {
+                // Placeholder URL - User needs to replace this with their actual Google Apps Script URL
+                const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec';
+                await fetch(APPS_SCRIPT_URL, {
                     method: 'POST',
+                    mode: 'no-cors', // Common for Google Apps Script
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
                     body: JSON.stringify(formData)
                 });
             } catch (err) { console.error("Lead submission failed", err); }
-            */
         });
     }
 });

@@ -1,0 +1,432 @@
+{
+    "name": "Blog Publisher v2",
+    "nodes": [
+        {
+            "parameters": {},
+            "id": "trigger-001",
+            "name": "When called by another workflow",
+            "type": "n8n-nodes-base.executeWorkflowTrigger",
+            "typeVersion": 1,
+            "position": [
+                -400,
+                160
+            ]
+        },
+        {
+            "parameters": {
+                "conditions": {
+                    "options": {
+                        "caseSensitive": true,
+                        "leftValue": "",
+                        "typeValidation": "strict"
+                    },
+                    "conditions": [
+                        {
+                            "id": "check-fileid",
+                            "leftValue": "={{ $json.fileId }}",
+                            "rightValue": "",
+                            "operator": {
+                                "type": "string",
+                                "operation": "exists",
+                                "singleValue": true
+                            }
+                        },
+                        {
+                            "id": "check-docid",
+                            "leftValue": "={{ $json.googleDocId }}",
+                            "rightValue": "",
+                            "operator": {
+                                "type": "string",
+                                "operation": "exists",
+                                "singleValue": true
+                            }
+                        }
+                    ],
+                    "combinator": "or"
+                },
+                "options": {}
+            },
+            "id": "if-has-source",
+            "name": "IF: Has External Source?",
+            "type": "n8n-nodes-base.if",
+            "typeVersion": 2,
+            "position": [
+                -176,
+                160
+            ]
+        },
+        {
+            "parameters": {
+                "conditions": {
+                    "options": {
+                        "caseSensitive": true,
+                        "leftValue": "",
+                        "typeValidation": "strict"
+                    },
+                    "conditions": [
+                        {
+                            "id": "check-docid",
+                            "leftValue": "={{ $('When called by another workflow').first().json.googleDocId }}",
+                            "rightValue": "",
+                            "operator": {
+                                "type": "string",
+                                "operation": "exists",
+                                "singleValue": true
+                            }
+                        }
+                    ],
+                    "combinator": "and"
+                },
+                "options": {}
+            },
+            "id": "if-is-google-doc",
+            "name": "IF: Is Google Doc?",
+            "type": "n8n-nodes-base.if",
+            "typeVersion": 2,
+            "position": [
+                48,
+                0
+            ]
+        },
+        {
+            "parameters": {
+                "documentId": {
+                    "__rl": true,
+                    "value": "={{ $('When called by another workflow').first().json.googleDocId }}",
+                    "mode": "id"
+                }
+            },
+            "id": "google-docs-get",
+            "name": "Google Docs: Get Content",
+            "type": "n8n-nodes-base.googleDocs",
+            "typeVersion": 2,
+            "position": [
+                272,
+                -100
+            ],
+            "credentials": {
+                "googleDocsOAuth2Api": {
+                    "id": "Am6DAFZ6lsj8DH1Q",
+                    "name": "Google Docs account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "resource": "file",
+                "fileId": "={{ $('When called by another workflow').first().json.fileId }}"
+            },
+            "id": "telegram-download-file",
+            "name": "Telegram: Download File",
+            "type": "n8n-nodes-base.telegram",
+            "typeVersion": 1.2,
+            "position": [
+                272,
+                100
+            ],
+            "credentials": {
+                "telegramApi": {
+                    "id": "EW2xjt48g5VAJ0M2",
+                    "name": "Telegram account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "jsCode": "// ==========================================\n// NODE: Extract content từ G-Doc hoặc File\n// ==========================================\n\nconst triggerData = $('When called by another workflow').first().json;\n\nlet title = triggerData.title || '';\nlet content = '';\n\n// TH1: Lấy từ Google Doc\ntry {\n  const docData = $('Google Docs: Get Content').first().json;\n  if (docData && docData.text) {\n    title = docData.title || title;\n    content = docData.text;\n  }\n} catch (e) {}\n\n// TH2: Lấy từ File Telegram (nếu TH1 không có data)\nif (!content) {\n  try {\n    const binaryData = $('Telegram: Download File').first().binary;\n    const dataKey = Object.keys(binaryData)[0];\n    if (dataKey && binaryData[dataKey].data) {\n      content = Buffer.from(binaryData[dataKey].data, 'base64').toString('utf-8');\n    }\n  } catch (e) {}\n}\n\n// Chuẩn hóa content\nconst lines = content.split('\\n');\nif (!title && lines[0]) {\n  if (lines[0].startsWith('#')) {\n    title = lines[0].replace(/^#+\\s*/, '').trim();\n    content = lines.slice(1).join('\\n').trim();\n  } else {\n    title = lines[0].slice(0, 120);\n  }\n}\n\nreturn [{\n  json: {\n    title: title,\n    content: content,\n    tags: triggerData.tags || [],\n    date: triggerData.date || new Date().toISOString().slice(0, 10),\n    author: triggerData.author || 'Đặng Tỵ',\n    chatId: triggerData.chatId || null,\n    fromExternal: true\n  }\n}];"
+            },
+            "id": "extract-content",
+            "name": "Extract External Content",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                496,
+                0
+            ]
+        },
+        {
+            "parameters": {
+                "jsCode": "// ==========================================\n// NODE: Chuẩn bị từ text input trực tiếp\n// ==========================================\n\nconst triggerData = $('When called by another workflow').first().json;\n\n// Lấy title từ dòng đầu hoặc từ input\nlet title = triggerData.title || '';\nlet content = triggerData.content || triggerData.text || '';\n\nif (!title && content) {\n  const lines = content.split('\\n');\n  if (lines[0] && lines[0].startsWith('#')) {\n    title = lines[0].replace(/^#+\\s*/, '').trim();\n    content = lines.slice(1).join('\\n').trim();\n  } else {\n    title = lines[0].slice(0, 120);\n  }\n}\n\nreturn [{\n  json: {\n    title: title,\n    content: content,\n    tags: triggerData.tags || [],\n    date: triggerData.date || new Date().toISOString().slice(0, 10),\n    author: triggerData.author || 'Đặng Tỵ',\n    chatId: triggerData.chatId || null,\n    fromFile: false\n  }\n}];"
+            },
+            "id": "prepare-text-input",
+            "name": "Prepare Text Input",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                496,
+                310
+            ]
+        },
+        {
+            "parameters": {
+                "mode": "combine",
+                "mergeByFields": {
+                    "values": []
+                },
+                "options": {}
+            },
+            "id": "merge-inputs",
+            "name": "Merge Inputs",
+            "type": "n8n-nodes-base.merge",
+            "typeVersion": 3,
+            "position": [
+                720,
+                160
+            ]
+        },
+        {
+            "parameters": {
+                "jsCode": "// (Giữ nguyên logic metadata như cũ...)\nconst input = $input.first().json;\nconst title = input.title || 'Untitled Post';\nconst content = input.content || '';\nconst tags = Array.isArray(input.tags) ? input.tags : [];\nconst date = input.date || new Date().toISOString().slice(0, 10);\n\nfunction slugifyVI(str) {\n  return (str || '')\n    .normalize('NFD')\n    .replace(/[\\u0300-\\u036f]/g, '')\n    .toLowerCase()\n    .replace(/[^a-z0-9\\s-]/g, '')\n    .trim()\n    .replace(/\\s+/g, '-')\n    .replace(/-+/g, '-');\n}\n\nfunction generateExcerpt(content, maxLen = 180) {\n  const plain = (content || '')\n    .replace(/```[\\s\\S]*?```/g, '')\n    .replace(/[#>*_`]/g, '')\n    .replace(/\\s+/g, ' ')\n    .trim();\n  return plain.length > maxLen ? plain.slice(0, maxLen - 1).trim() + '…' : plain;\n}\n\nconst slug = slugifyVI(title);\nconst post = {\n  id: `post-${slug}-${Date.now().toString().slice(-6)}`,\n  title: title,\n  slug: slug,\n  excerpt: generateExcerpt(content),\n  content: content,\n  tags: tags,\n  date: date,\n  author: input.author || 'Đặng Tỵ',\n  aiGenerated: true,\n  published: true\n};\n\nreturn [{\n  json: {\n    post: post,\n    chatId: input.chatId || null\n  }\n}];"
+            },
+            "id": "prepare-blog-post",
+            "name": "Prepare Blog Post",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                944,
+                160
+            ]
+        },
+        {
+            "parameters": {
+                "resource": "file",
+                "operation": "get",
+                "owner": {
+                    "__rl": true,
+                    "value": "dangty1989",
+                    "mode": "name"
+                },
+                "repository": {
+                    "__rl": true,
+                    "value": "dangtyn8n",
+                    "mode": "name"
+                },
+                "filePath": "data/posts.json"
+            },
+            "id": "github-get-posts",
+            "name": "GitHub: Get posts.json",
+            "type": "n8n-nodes-base.github",
+            "typeVersion": 1.1,
+            "position": [
+                1168,
+                160
+            ],
+            "credentials": {
+                "githubApi": {
+                    "id": "JZH0uzMUC1DCEK9y",
+                    "name": "GitHub account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "jsCode": "// (Giữ nguyên logic merge JSON cũ...)\nconst fileData = $('GitHub: Get posts.json').first().json;\nconst sha = fileData.sha;\nconst newPost = $('Prepare Blog Post').first().json.post;\n\nlet fileContent = Buffer.from(fileData.content, 'base64').toString('utf-8');\nlet postsData = JSON.parse(fileContent);\npostsData.posts.unshift(newPost);\n\nreturn [{\n  json: {\n    mergedContent: JSON.stringify(postsData, null, 2),\n    sha: sha,\n    newPost: newPost,\n    chatId: $('Prepare Blog Post').first().json.chatId\n  }\n}];"
+            },
+            "id": "merge-json",
+            "name": "Merge JSON",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                1392,
+                160
+            ]
+        },
+        {
+            "parameters": {
+                "resource": "file",
+                "operation": "edit",
+                "owner": {
+                    "__rl": true,
+                    "value": "dangty1989",
+                    "mode": "name"
+                },
+                "repository": {
+                    "__rl": true,
+                    "value": "dangtyn8n",
+                    "mode": "name"
+                },
+                "filePath": "data/posts.json",
+                "fileContent": "={{ $json.mergedContent }}",
+                "commitMessage": "✨ Add blog post from G-Doc/File: {{ $json.newPost.title }}"
+            },
+            "id": "github-commit-posts",
+            "name": "GitHub: Commit posts.json",
+            "type": "n8n-nodes-base.github",
+            "typeVersion": 1.1,
+            "position": [
+                1616,
+                160
+            ],
+            "credentials": {
+                "githubApi": {
+                    "id": "JZH0uzMUC1DCEK9y",
+                    "name": "GitHub account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "jsCode": "const post = $('Merge JSON').first().json.newPost;\nconst chatId = $('Merge JSON').first().json.chatId;\nconst siteUrl = 'https://dangtyn8n.io.vn';\n\nreturn [{\n  json: {\n    success: true,\n    postUrl: `${siteUrl}/blog/detail.html?slug=${post.slug}`,\n    postTitle: post.title,\n    chatId: chatId,\n    message: `✅ Blog published successfully: ${post.title}`\n  }\n}];"
+            },
+            "id": "return-success",
+            "name": "Return Success Output",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                1840,
+                160
+            ]
+        }
+    ],
+    "connections": {
+        "When called by another workflow": {
+            "main": [
+                [
+                    {
+                        "node": "IF: Has External Source?",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "IF: Has External Source?": {
+            "main": [
+                [
+                    {
+                        "node": "IF: Is Google Doc?",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "Prepare Text Input",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "IF: Is Google Doc?": {
+            "main": [
+                [
+                    {
+                        "node": "Google Docs: Get Content",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "Telegram: Download File",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Google Docs: Get Content": {
+            "main": [
+                [
+                    {
+                        "node": "Extract External Content",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Telegram: Download File": {
+            "main": [
+                [
+                    {
+                        "node": "Extract External Content",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Extract External Content": {
+            "main": [
+                [
+                    {
+                        "node": "Merge Inputs",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Prepare Text Input": {
+            "main": [
+                [
+                    {
+                        "node": "Merge Inputs",
+                        "type": "main",
+                        "index": 1
+                    }
+                ]
+            ]
+        },
+        "Merge Inputs": {
+            "main": [
+                [
+                    {
+                        "node": "Prepare Blog Post",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Prepare Blog Post": {
+            "main": [
+                [
+                    {
+                        "node": "GitHub: Get posts.json",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "GitHub: Get posts.json": {
+            "main": [
+                [
+                    {
+                        "node": "Merge JSON",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Merge JSON": {
+            "main": [
+                [
+                    {
+                        "node": "GitHub: Commit posts.json",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "GitHub: Commit posts.json": {
+            "main": [
+                [
+                    {
+                        "node": "Return Success Output",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    },
+    "meta": {
+        "instanceId": "80ff9b742c2b1d53f6055db1f4f1fadda9dee1113090f9bbb8307bf1dbd0b590"
+    }
+}

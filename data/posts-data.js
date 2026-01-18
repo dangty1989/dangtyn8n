@@ -36,3 +36,23 @@ window.BLOG_DATA = {
         "lastUpdated": "2026-01-17T20:45:00Z"
     }
 };
+
+window.PODCAST_DATA = {
+    "episodes": [
+        {
+            "id": 1,
+            "number": 1,
+            "title": "N8n Là Gì? Cách Dùng n8n Để Tự Động Hoá Kinh Doanh",
+            "slug": "tap-1",
+            "description": "Trong tập này, mình giới thiệu n8n là gì, tại sao lại cần nó, và cách bắt đầu sử dụng.",
+            "date": "2026-01-15",
+            "duration": 40,
+            "audioUrl": "https://drive.google.com/uc?export=download&id=1C0yD7E4U-oA_R-v-B-C-k-U-j-F-E-L-R",
+            "status": "published"
+        }
+    ],
+    "metadata": {
+        "total": 1,
+        "lastUpdated": "2026-01-15T10:00:00Z"
+    }
+};

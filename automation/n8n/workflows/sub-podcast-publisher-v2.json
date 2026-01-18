@@ -1,0 +1,436 @@
+{
+    "name": "Podcast Publisher v2",
+    "nodes": [
+        {
+            "parameters": {},
+            "id": "trigger-001",
+            "name": "When called by another workflow",
+            "type": "n8n-nodes-base.executeWorkflowTrigger",
+            "typeVersion": 1,
+            "position": [
+                -1200,
+                160
+            ]
+        },
+        {
+            "parameters": {
+                "resource": "file",
+                "fileId": "={{ $json.fileId }}"
+            },
+            "id": "telegram-get-file",
+            "name": "Telegram: Download Audio File",
+            "type": "n8n-nodes-base.telegram",
+            "typeVersion": 1.2,
+            "position": [
+                -976,
+                160
+            ],
+            "credentials": {
+                "telegramApi": {
+                    "id": "EW2xjt48g5VAJ0M2",
+                    "name": "Telegram account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "name": "={{ $('When called by another workflow').first().json.fileName || 'audio_' + Date.now() + '.mp3' }}",
+                "driveId": {
+                    "__rl": true,
+                    "mode": "list",
+                    "value": "My Drive"
+                },
+                "folderId": {
+                    "__rl": true,
+                    "value": "14kZuO7y_-nlOu2UD0aqMGiVY4IbZ45HI",
+                    "mode": "id"
+                },
+                "options": {}
+            },
+            "id": "gdrive-upload",
+            "name": "Google Drive: Upload Audio",
+            "type": "n8n-nodes-base.googleDrive",
+            "typeVersion": 3,
+            "position": [
+                -752,
+                160
+            ],
+            "credentials": {
+                "googleDriveOAuth2Api": {
+                    "id": "Am6DAFZ6lsj8DH1Q",
+                    "name": "Google Drive account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "operation": "share",
+                "fileId": {
+                    "__rl": true,
+                    "mode": "id",
+                    "value": "={{ $json.id }}"
+                },
+                "permissionsUi": {
+                    "permissionsValues": {
+                        "role": "reader",
+                        "type": "anyone"
+                    }
+                },
+                "options": {}
+            },
+            "id": "gdrive-share",
+            "name": "Google Drive: Set Public",
+            "type": "n8n-nodes-base.googleDrive",
+            "typeVersion": 3,
+            "position": [
+                -528,
+                160
+            ],
+            "credentials": {
+                "googleDriveOAuth2Api": {
+                    "id": "Am6DAFZ6lsj8DH1Q",
+                    "name": "Google Drive account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "jsCode": "// ==========================================\n// NODE: Tạo episode metadata chuẩn\n// ==========================================\n\nfunction slugifyVI(str) {\n  return (str || '')\n    .normalize('NFD')\n    .replace(/[\\u0300-\\u036f]/g, '')\n    .toLowerCase()\n    .replace(/[^a-z0-9\\s-]/g, '')\n    .trim()\n    .replace(/\\s+/g, '-')\n    .replace(/-+/g, '-');\n}\n\nfunction generateDescription(content, maxLen = 300) {\n  const plain = (content || '')\n    .replace(/```[\\s\\S]*?```/g, '')\n    .replace(/[#>*_`]/g, '')\n    .replace(/\\s+/g, ' ')\n    .trim();\n  return plain.length > maxLen ? plain.slice(0, maxLen - 1).trim() + '…' : plain;\n}\n\n// Lấy input từ trigger node\nconst triggerData = $('When called by another workflow').first().json;\nconst title = triggerData.title || triggerData.fileName?.replace(/\\.[^/.]+$/, '') || 'Untitled Episode';\nconst description = triggerData.description || triggerData.text || '';\nconst tags = Array.isArray(triggerData.tags) ? triggerData.tags : [];\nconst date = triggerData.date || new Date().toISOString().slice(0, 10);\nconst duration = triggerData.duration || 10;\n\n// Audio URL từ Google Drive\nconst driveFileId = $('Google Drive: Set Public').first().json.id;\nconst audioUrl = `https://drive.google.com/uc?export=download&id=${driveFileId}`;\nconst audioFileName = triggerData.fileName || `episode_${Date.now()}.mp3`;\n\n// Tạo episode object\nconst slug = slugifyVI(title);\nconst timestamp = Date.now().toString().slice(-6);\n\nconst episode = {\n  id: `ep-${slug}-${timestamp}`,\n  title: title,\n  slug: slug,\n  description: generateDescription(description),\n  audioUrl: audioUrl,\n  audioFile: audioFileName,\n  audioFileId: driveFileId,\n  tags: tags,\n  categories: triggerData.categories || ['Podcasts', 'Technology'],\n  date: date,\n  duration: duration,\n  transcript: triggerData.transcript || '',\n  published: true\n};\n\nreturn [{\n  json: {\n    episode: episode,\n    audioUrl: audioUrl,\n    chatId: triggerData.chatId || null\n  }\n}];"
+            },
+            "id": "prepare-metadata",
+            "name": "Prepare Episode Metadata",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                -304,
+                160
+            ]
+        },
+        {
+            "parameters": {
+                "resource": "file",
+                "operation": "get",
+                "owner": {
+                    "__rl": true,
+                    "value": "dangty1989",
+                    "mode": "name"
+                },
+                "repository": {
+                    "__rl": true,
+                    "value": "dangtyn8n",
+                    "mode": "name"
+                },
+                "filePath": "rss/podcast.xml",
+                "additionalParameters": {}
+            },
+            "id": "github-get-rss",
+            "name": "GitHub: Get RSS Feed",
+            "type": "n8n-nodes-base.github",
+            "typeVersion": 1.1,
+            "position": [
+                -80,
+                0
+            ],
+            "credentials": {
+                "githubApi": {
+                    "id": "JZH0uzMUC1DCEK9y",
+                    "name": "GitHub account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "resource": "file",
+                "operation": "get",
+                "owner": {
+                    "__rl": true,
+                    "value": "dangty1989",
+                    "mode": "name"
+                },
+                "repository": {
+                    "__rl": true,
+                    "value": "dangtyn8n",
+                    "mode": "name"
+                },
+                "filePath": "data/podcast-episodes.json",
+                "additionalParameters": {}
+            },
+            "id": "github-get-json",
+            "name": "GitHub: Get Episodes JSON",
+            "type": "n8n-nodes-base.github",
+            "typeVersion": 1.1,
+            "position": [
+                -80,
+                304
+            ],
+            "credentials": {
+                "githubApi": {
+                    "id": "JZH0uzMUC1DCEK9y",
+                    "name": "GitHub account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "jsCode": "// ==========================================\n// NODE: Build new RSS <item>\n// ==========================================\n\nconst ep = $('Prepare Episode Metadata').first().json.episode;\nconst pubDate = new Date(ep.date).toUTCString();\n\nfunction escapeXml(str) {\n  return (str || '')\n    .replace(/&/g, '&amp;')\n    .replace(/</g, '&lt;')\n    .replace(/>/g, '&gt;')\n    .replace(/\"/g, '&quot;')\n    .replace(/'/g, '&apos;');\n}\n\nconst rssItem = `\n    <item>\n      <title>${escapeXml(ep.title)}</title>\n      <description><![CDATA[${ep.description}]]></description>\n      <pubDate>${pubDate}</pubDate>\n      <enclosure url=\"${ep.audioUrl}\" length=\"1\" type=\"audio/mpeg\" />\n      <guid isPermaLink=\"false\">${ep.id}</guid>\n      <itunes:duration>${ep.duration}:00</itunes:duration>\n      <itunes:episodeType>full</itunes:episodeType>\n      <itunes:explicit>false</itunes:explicit>\n    </item>`;\n\nreturn [{\n  json: {\n    rssItem: rssItem,\n    episode: ep\n  }\n}];"
+            },
+            "id": "build-rss-item",
+            "name": "Build RSS Item",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                144,
+                0
+            ]
+        },
+        {
+            "parameters": {
+                "jsCode": "// ==========================================\n// NODE: Merge episode vào JSON array\n// ==========================================\n\nconst fileData = $('GitHub: Get Episodes JSON').first().json;\nconst fileContent = fileData.content;\nconst sha = fileData.sha;\nconst newEpisode = $('Prepare Episode Metadata').first().json.episode;\n\nif (!fileContent) {\n  throw new Error('❌ Không lấy được podcast-episodes.json từ GitHub');\n}\n\nif (!sha) {\n  throw new Error('❌ Không lấy được SHA');\n}\n\nlet jsonText = fileContent;\nif (fileData.encoding === 'base64') {\n  jsonText = Buffer.from(fileContent, 'base64').toString('utf-8');\n}\n\nlet episodes = [];\ntry {\n  episodes = JSON.parse(jsonText);\n} catch (err) {\n  throw new Error(`❌ podcast-episodes.json parse error: ${err.message}`);\n}\n\nif (!Array.isArray(episodes)) {\n  throw new Error('❌ podcast-episodes.json phải là array');\n}\n\nconst existingIndex = episodes.findIndex(e => e.slug === newEpisode.slug);\nif (existingIndex !== -1) {\n  const ts = Date.now().toString().slice(-6);\n  newEpisode.slug = `${newEpisode.slug}-${ts}`;\n  newEpisode.id = `ep-${newEpisode.slug}`;\n}\n\nepisodes.push(newEpisode);\nepisodes.sort((a, b) => String(b.date || '').localeCompare(String(a.date || '')));\n\nconst mergedJson = JSON.stringify(episodes, null, 2);\n\nreturn [{\n  json: {\n    mergedJson: mergedJson,\n    episodesSha: sha,\n    newEpisode: newEpisode,\n    totalEpisodes: episodes.length\n  }\n}];"
+            },
+            "id": "merge-json",
+            "name": "Merge Episodes JSON",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                144,
+                304
+            ]
+        },
+        {
+            "parameters": {
+                "jsCode": "// ==========================================\n// NODE: Merge RSS item vào podcast.xml\n// ==========================================\n\nconst fileData = $('GitHub: Get RSS Feed').first().json;\nconst fileContent = fileData.content;\nconst sha = fileData.sha;\nconst newItem = $('Build RSS Item').first().json.rssItem;\n\nif (!fileContent) {\n  throw new Error('❌ Không lấy được podcast.xml từ GitHub');\n}\n\nif (!sha) {\n  throw new Error('❌ Không lấy được SHA của podcast.xml');\n}\n\nlet xmlText = fileContent;\nif (fileData.encoding === 'base64') {\n  xmlText = Buffer.from(fileContent, 'base64').toString('utf-8');\n}\n\n// Insert item trước </channel>\nconst mergedRss = xmlText.replace(\n  '</channel>',\n  `${newItem}\\n  </channel>`\n);\n\nreturn [{\n  json: {\n    mergedRss: mergedRss,\n    rssSha: sha\n  }\n}];"
+            },
+            "id": "merge-rss",
+            "name": "Merge RSS Feed",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                368,
+                0
+            ]
+        },
+        {
+            "parameters": {
+                "resource": "file",
+                "operation": "edit",
+                "owner": {
+                    "__rl": true,
+                    "value": "dangty1989",
+                    "mode": "name"
+                },
+                "repository": {
+                    "__rl": true,
+                    "value": "dangtyn8n",
+                    "mode": "name"
+                },
+                "filePath": "rss/podcast.xml",
+                "fileContent": "={{ $json.mergedRss }}",
+                "commitMessage": "🎙️ Add podcast: {{ $('Prepare Episode Metadata').first().json.episode.title }}"
+            },
+            "id": "github-commit-rss",
+            "name": "GitHub: Commit RSS",
+            "type": "n8n-nodes-base.github",
+            "typeVersion": 1.1,
+            "position": [
+                592,
+                0
+            ],
+            "credentials": {
+                "githubApi": {
+                    "id": "JZH0uzMUC1DCEK9y",
+                    "name": "GitHub account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "resource": "file",
+                "operation": "edit",
+                "owner": {
+                    "__rl": true,
+                    "value": "dangty1989",
+                    "mode": "name"
+                },
+                "repository": {
+                    "__rl": true,
+                    "value": "dangtyn8n",
+                    "mode": "name"
+                },
+                "filePath": "data/podcast-episodes.json",
+                "fileContent": "={{ $json.mergedJson }}",
+                "commitMessage": "🎙️ Add episode JSON: {{ $('Prepare Episode Metadata').first().json.episode.title }}"
+            },
+            "id": "github-commit-json",
+            "name": "GitHub: Commit Episodes JSON",
+            "type": "n8n-nodes-base.github",
+            "typeVersion": 1.1,
+            "position": [
+                592,
+                304
+            ],
+            "credentials": {
+                "githubApi": {
+                    "id": "JZH0uzMUC1DCEK9y",
+                    "name": "GitHub account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "jsCode": "// ==========================================\n// NODE: Return success output\n// ==========================================\n\nconst ep = $('Prepare Episode Metadata').first().json.episode;\nconst chatId = $('Prepare Episode Metadata').first().json.chatId;\n\nconst siteUrl = 'https://dangtyn8n.io.vn';\nconst episodeUrl = `${siteUrl}/podcast/${ep.slug}`;\nconst rssFeedUrl = `${siteUrl}/rss/podcast.xml`;\n\nlet rssCommitSha = 'unknown';\nlet jsonCommitSha = 'unknown';\n\ntry {\n  rssCommitSha = $('GitHub: Commit RSS').first().json?.commit?.sha || 'unknown';\n} catch (e) {}\n\ntry {\n  jsonCommitSha = $('GitHub: Commit Episodes JSON').first().json?.commit?.sha || 'unknown';\n} catch (e) {}\n\nlet totalEpisodes = 0;\ntry {\n  totalEpisodes = $('Merge Episodes JSON').first().json.totalEpisodes || 0;\n} catch (e) {}\n\nreturn [{\n  json: {\n    success: true,\n    type: 'podcast',\n    episodeUrl: episodeUrl,\n    episodeId: ep.id,\n    episodeSlug: ep.slug,\n    episodeTitle: ep.title,\n    audioUrl: ep.audioUrl,\n    audioFileId: ep.audioFileId,\n    rssFeedUrl: rssFeedUrl,\n    rssCommitSha: rssCommitSha,\n    jsonCommitSha: jsonCommitSha,\n    totalEpisodes: totalEpisodes,\n    chatId: chatId,\n    message: `✅ Podcast published: ${ep.title}`,\n    timestamp: new Date().toISOString()\n  }\n}];"
+            },
+            "id": "return-output",
+            "name": "Return Success Output",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                816,
+                160
+            ]
+        }
+    ],
+    "connections": {
+        "When called by another workflow": {
+            "main": [
+                [
+                    {
+                        "node": "Telegram: Download Audio File",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Telegram: Download Audio File": {
+            "main": [
+                [
+                    {
+                        "node": "Google Drive: Upload Audio",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Google Drive: Upload Audio": {
+            "main": [
+                [
+                    {
+                        "node": "Google Drive: Set Public",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Google Drive: Set Public": {
+            "main": [
+                [
+                    {
+                        "node": "Prepare Episode Metadata",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Prepare Episode Metadata": {
+            "main": [
+                [
+                    {
+                        "node": "GitHub: Get RSS Feed",
+                        "type": "main",
+                        "index": 0
+                    },
+                    {
+                        "node": "GitHub: Get Episodes JSON",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "GitHub: Get RSS Feed": {
+            "main": [
+                [
+                    {
+                        "node": "Build RSS Item",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "GitHub: Get Episodes JSON": {
+            "main": [
+                [
+                    {
+                        "node": "Merge Episodes JSON",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Build RSS Item": {
+            "main": [
+                [
+                    {
+                        "node": "Merge RSS Feed",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Merge Episodes JSON": {
+            "main": [
+                [
+                    {
+                        "node": "GitHub: Commit Episodes JSON",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Merge RSS Feed": {
+            "main": [
+                [
+                    {
+                        "node": "GitHub: Commit RSS",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "GitHub: Commit RSS": {
+            "main": [
+                [
+                    {
+                        "node": "Return Success Output",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "GitHub: Commit Episodes JSON": {
+            "main": [
+                [
+                    {
+                        "node": "Return Success Output",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    },
+    "pinData": {},
+    "meta": {
+        "templateCredsSetupCompleted": true,
+        "instanceId": "80ff9b742c2b1d53f6055db1f4f1fadda9dee1113090f9bbb8307bf1dbd0b590"
+    }
+}
