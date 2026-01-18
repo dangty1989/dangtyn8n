@@ -1,6 +1,24 @@
 {
   "episodes": [
     {
+      "id": "ep-atypodcast001mp336f760d1-2050-49b1-b93c-27207f5ca4f9-913229",
+      "title": "atypodcast001mp3_36f760d1-2050-49b1-b93c-27207f5ca4f9",
+      "slug": "atypodcast001mp336f760d1-2050-49b1-b93c-27207f5ca4f9",
+      "description": "Nội dung chia sẻ từ Telegram",
+      "audioUrl": "https://drive.google.com/uc?export=download&id=11woBGbpQFckKBZvVDpbDlRSTUXnFFGIa",
+      "audioFile": "atypodcast001mp3_36f760d1-2050-49b1-b93c-27207f5ca4f9.mp3",
+      "audioFileId": "11woBGbpQFckKBZvVDpbDlRSTUXnFFGIa",
+      "tags": [],
+      "categories": [
+        "Podcasts",
+        "Technology"
+      ],
+      "date": "2026-01-18",
+      "duration": 10,
+      "transcript": "",
+      "published": true
+    },
+    {
       "id": 1,
       "number": 1,
       "title": "N8n Là Gì? Cách Dùng n8n Để Tự Động Hoá Kinh Doanh",
@@ -14,7 +32,7 @@
     }
   ],
   "metadata": {
-    "total": 1,
-    "lastUpdated": "2026-01-15T10:00:00Z"
+    "total": 2,
+    "lastUpdated": "2026-01-18T10:24:59.698Z"
   }
 }
