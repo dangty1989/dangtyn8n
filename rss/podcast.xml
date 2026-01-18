@@ -42,5 +42,16 @@
       <itunes:image href="https://dangtyn8n.io.vn/assets/images/blog-1.jpg"/>
       <enclosure url="https://dangtyn8n.io.vn/assets/audio/ep1-n8n-intro.mp3" length="48000000" type="audio/mpeg"/>
     </item>
+  
+    <item>
+      <title>Bẻ nhỏ cách xây AI Agent n8n</title>
+      <description><![CDATA[Podcast: Bẻ nhỏ cách xây AI Agent n8n. Được tải lên tự động từ Google Drive vào ngày 18/1/2026.]]></description>
+      <pubDate>Sun, 18 Jan 2026 00:00:00 GMT</pubDate>
+      <enclosure url="https://drive.google.com/uc?export=download&id=1SgDNqk05RES8TN4TkFlZg6ixVegoQmmC" length="1" type="audio/mpeg" />
+      <guid isPermaLink="false">ep-be-nho-cach-xay-ai-agent-n8n-524201</guid>
+      <itunes:duration>15:00</itunes:duration>
+      <itunes:episodeType>full</itunes:episodeType>
+      <itunes:explicit>false</itunes:explicit>
+    </item>
   </channel>
 </rss>
