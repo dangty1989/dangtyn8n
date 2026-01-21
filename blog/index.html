@@ -1,269 +1,327 @@
 <!DOCTYPE html>
 <html lang="vi">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Blog - DangTyn8n AI Agent & Automation</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Blog - DangTyn8n AI Agent & Automation</title>
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
 
-        header {
-            text-align: center;
-            color: white;
-            padding: 40px 20px;
-            margin-bottom: 40px;
-        }
+    .container { max-width: 1200px; margin: 0 auto; }
 
-        header h1 {
-            font-size: 3rem;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
-        }
+    header {
+      text-align: center;
+      color: white;
+      padding: 40px 20px;
+      margin-bottom: 40px;
+    }
 
-        header p {
-            font-size: 1.2rem;
-            opacity: 0.9;
-        }
+    header h1 {
+      font-size: 3rem;
+      margin-bottom: 10px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+    }
 
-        .blog-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 30px;
-            margin-bottom: 40px;
-        }
+    header p { font-size: 1.2rem; opacity: 0.9; }
 
-        .blog-card {
-            background: white;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s, box-shadow 0.3s;
-            cursor: pointer;
-        }
+    .nav-links {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
 
-        .blog-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
-        }
+    .blog-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 30px;
+      margin-bottom: 40px;
+    }
 
-        .blog-image {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
+    .blog-card {
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      transition: transform 0.3s, box-shadow 0.3s;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+    }
 
-        .blog-content {
-            padding: 25px;
-        }
+    .blog-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+    }
 
-        .blog-category {
-            display: inline-block;
-            background: #667eea;
-            color: white;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            margin-bottom: 10px;
-        }
+    .blog-image {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      display: block;
+    }
 
-        .blog-title {
-            font-size: 1.5rem;
-            margin: 10px 0;
-            color: #2d3748;
-            line-height: 1.3;
-        }
+    .blog-content { 
+      padding: 25px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
 
-        .blog-excerpt {
-            color: #718096;
-            margin: 15px 0;
-            font-size: 0.95rem;
-            line-height: 1.6;
-        }
+    .blog-category {
+      display: inline-block;
+      background: #667eea;
+      color: white;
+      padding: 5px 15px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      margin-bottom: 10px;
+      width: fit-content;
+    }
 
-        .blog-meta {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 15px;
-            padding-top: 15px;
-            border-top: 1px solid #e2e8f0;
-            font-size: 0.85rem;
-            color: #a0aec0;
-        }
+    .blog-title {
+      font-size: 1.5rem;
+      margin: 10px 0;
+      color: #2d3748;
+      line-height: 1.3;
+      flex-grow: 0;
+    }
 
-        .blog-author {
-            font-weight: 600;
-        }
+    .blog-excerpt {
+      color: #718096;
+      margin: 15px 0;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      flex-grow: 1;
+    }
 
-        .blog-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-top: 10px;
-        }
+    .blog-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      margin-top: 15px;
+      padding-top: 15px;
+      border-top: 1px solid #e2e8f0;
+      font-size: 0.85rem;
+      color: #718096;
+    }
 
-        .tag {
-            background: #edf2f7;
-            color: #4a5568;
-            padding: 3px 10px;
-            border-radius: 12px;
-            font-size: 0.75rem;
-        }
+    .blog-author { font-weight: 600; }
 
-        .loading {
-            text-align: center;
-            color: white;
-            font-size: 1.5rem;
-            padding: 40px;
-        }
+    .blog-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
 
-        .error {
-            background: #fed7d7;
-            color: #c53030;
-            padding: 20px;
-            border-radius: 8px;
-            text-align: center;
-        }
+    .tag {
+      background: #edf2f7;
+      color: #4a5568;
+      padding: 3px 10px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+    }
 
-        .back-home {
-            display: inline-block;
-            background: white;
-            color: #667eea;
-            padding: 12px 30px;
-            border-radius: 25px;
-            text-decoration: none;
-            font-weight: 600;
-            margin-bottom: 30px;
-            transition: all 0.3s;
-        }
+    .loading {
+      text-align: center;
+      color: white;
+      font-size: 1.5rem;
+      padding: 40px;
+    }
 
-        .back-home:hover {
-            background: #667eea;
-            color: white;
-            transform: translateX(-5px);
-        }
+    .error {
+      background: #fed7d7;
+      color: #c53030;
+      padding: 20px;
+      border-radius: 8px;
+      text-align: center;
+      max-width: 600px;
+      margin: 40px auto;
+    }
 
-        @media (max-width: 768px) {
-            header h1 {
-                font-size: 2rem;
-            }
+    .back-home {
+      display: inline-block;
+      background: white;
+      color: #667eea;
+      padding: 12px 30px;
+      border-radius: 25px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s;
+    }
 
-            .blog-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
+    .back-home:hover {
+      background: #667eea;
+      color: white;
+      transform: translateX(-5px);
+    }
+
+    @media (max-width: 768px) {
+      header h1 { font-size: 2rem; }
+      .blog-grid { grid-template-columns: 1fr; }
+      .nav-links { flex-direction: column; align-items: center; }
+    }
+  </style>
 </head>
 
 <body>
-    <div class="container">
-        <a href="../index.html" class="back-home">← Quay lại trang chủ</a>
+  <div class="container">
+    <header>
+      <!-- Navigation Links -->
+      <nav class="nav-links">
+        <a href="../index.html" class="back-home">← Trang chủ</a>
+        <a href="../podcast/index.html" class="back-home">📻 Podcast</a>
+      </nav>
 
-        <header>
-            <nav style="margin-bottom: 2rem;">
-                <a href="../index.html" class="back-home" style="margin-bottom: 0;">← Trang chủ</a>
-                <a href="../podcast/index.html" class="back-home" style="margin-bottom: 0; margin-left: 1rem;">📻
-                    Podcast</a>
-            </nav>
-            <h1>🤖 Blog AI Agent & Automation</h1>
-            <p>Kiến thức và hướng dẫn về n8n, AI Agent và Tự động hóa</p>
-        </header>
+      <h1>🤖 Blog AI Agent & Automation</h1>
+      <p>Kiến thức và hướng dẫn về n8n, AI Agent và Tự động hóa</p>
+    </header>
 
-        <div id="blogContainer" class="loading">
-            Đang tải bài viết...
-        </div>
-    </div>
+    <div id="blogContainer" class="loading">Đang tải bài viết...</div>
+  </div>
 
-    <!-- Local data fallback -->
-    <script src="../data/posts-data.js"></script>
+  <!-- Local data fallback (phải nằm đúng đường dẫn vì trang ở /blog/) -->
+  <script src="../data/posts-data.js"></script>
 
-    <script>
-        async function loadBlogs() {
-            const container = document.getElementById('blogContainer');
+  <script>
+    // ===== CONSTANTS =====
+    const FALLBACK_IMG = '../assets/images/blog-placeholder.png';
 
-            try {
-                let data;
-                try {
-                    const response = await fetch('../data/posts.json');
-                    if (response.ok) {
-                        data = await response.json();
-                    } else {
-                        throw new Error('Fetch failed');
-                    }
-                } catch (e) {
-                    console.warn('Blog fetch failed, using local data fallback');
-                    data = window.BLOG_DATA;
-                }
+    // ===== UTILITIES =====
+    function formatDate(dateString) {
+      const date = new Date(dateString);
+      if (Number.isNaN(date.getTime())) return '';
+      return date.toLocaleDateString('vi-VN', { 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+      });
+    }
 
-                if (!data || !data.posts) throw new Error('Không thể tải dữ liệu blog');
-                const posts = data.posts.filter(post => post.status === 'published');
+    function normalizePosts(raw) {
+      // raw có thể là {posts:[...]} hoặc [...] (fallback)
+      if (raw && Array.isArray(raw.posts)) return raw.posts;
+      if (Array.isArray(raw)) return raw;
+      return [];
+    }
 
-                if (posts.length === 0) {
-                    container.innerHTML = '<div class="error">Chưa có bài viết nào.</div>';
-                    return;
-                }
+    function safeText(value) {
+      return String(value ?? '')
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#039;');
+    }
 
-                // Sắp xếp theo ngày mới nhất
-                posts.sort((a, b) => new Date(b.date) - new Date(a.date));
+    // ===== MAIN FUNCTION =====
+    async function loadBlogs() {
+      const container = document.getElementById('blogContainer');
 
-                container.className = 'blog-grid';
-                container.innerHTML = posts.map(post => `
-                    <div class="blog-card" onclick="window.location.href='detail.html?slug=${post.slug}'">
-                        <img src="${post.image}" alt="${post.title}" class="blog-image" onerror="this.style.display='none'">
-                        <div class="blog-content">
-                            <span class="blog-category">${post.category}</span>
-                            <h2 class="blog-title">${post.title}</h2>
-                            <p class="blog-excerpt">${post.excerpt}</p>
-                            <div class="blog-tags">
-                                ${post.tags.map(tag => `<span class="tag">#${tag}</span>`).join('')}
-                            </div>
-                            <div class="blog-meta">
-                                <span class="blog-author">👤 ${post.author}</span>
-                                <span>📅 ${formatDate(post.date)}</span>
-                                <span>⏱️ ${post.readTime} phút</span>
-                            </div>
-                        </div>
-                    </div>
-                `).join('');
+      try {
+        let rawData = null;
 
-            } catch (error) {
-                container.className = '';
-                container.innerHTML = `<div class="error">❌ Lỗi: ${error.message}</div>`;
-            }
+        // 1) Ưu tiên fetch file JSON thật
+        try {
+          const response = await fetch('../data/posts.json');
+          if (!response.ok) throw new Error(`HTTP ${response.status}`);
+          rawData = await response.json();
+        } catch (e) {
+          // 2) Fallback về local JS nếu fetch lỗi
+          console.warn('⚠️ Blog fetch failed, using local data fallback', e);
+          rawData = window.BLOG_DATA;
         }
 
-        function formatDate(dateString) {
-            const date = new Date(dateString);
-            return date.toLocaleDateString('vi-VN', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
-            });
+        const allPosts = normalizePosts(rawData);
+
+        // Lọc bài đã publish: JSON của bạn dùng published: true
+        const posts = allPosts.filter(p => p && p.published === true);
+
+        if (posts.length === 0) {
+          container.className = '';
+          container.innerHTML = '<div class="error">📭 Chưa có bài viết nào được xuất bản.</div>';
+          return;
         }
 
-        // Tải blog khi trang load
-        loadBlogs();
-    </script>
+        // Sort bài viết mới nhất lên trước
+        posts.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+        // ===== RENDER BLOG GRID =====
+        container.className = 'blog-grid';
+        container.innerHTML = posts.map(post => {
+          const title = post.title || 'Bài viết';
+          
+          // Ưu tiên featuredImage > image > fallback placeholder
+          const imageUrl = post.featuredImage || post.image || FALLBACK_IMG;
+          
+          const category = post.category || (post.tags && post.tags[0]) || 'Blog';
+          const excerpt = post.excerpt || post.description || '';
+          const author = post.author || '';
+          const readTime = (post.readTime != null) ? `${post.readTime} phút` : '';
+          const dateText = post.date ? formatDate(post.date) : '';
+
+          return `
+            <div class="blog-card" onclick="window.location.href='detail.html?slug=${encodeURIComponent(post.slug)}'">
+              <!-- Featured Image với fallback -->
+              <img 
+                src="${imageUrl}" 
+                alt="${safeText(title)}" 
+                class="blog-image"
+                loading="lazy"
+                onerror="this.onerror=null; this.src='${FALLBACK_IMG}';"
+              />
+              
+              <div class="blog-content">
+                <span class="blog-category">${safeText(category)}</span>
+                <h2 class="blog-title">${safeText(title)}</h2>
+                <p class="blog-excerpt">${safeText(excerpt)}</p>
+
+                <!-- Tags Section -->
+                ${Array.isArray(post.tags) && post.tags.length ? `
+                  <div class="blog-tags">
+                    ${post.tags.slice(0, 3).map(tag => `<span class="tag">#${safeText(tag)}</span>`).join('')}
+                    ${post.tags.length > 3 ? `<span class="tag">+${post.tags.length - 3}</span>` : ''}
+                  </div>
+                ` : ''}
+
+                <!-- Meta Info -->
+                <div class="blog-meta">
+                  ${author ? `<span class="blog-author">👤 ${safeText(author)}</span>` : ''}
+                  ${dateText ? `<span>📅 ${safeText(dateText)}</span>` : ''}
+                  ${readTime ? `<span>⏱️ ${safeText(readTime)}</span>` : ''}
+                </div>
+              </div>
+            </div>
+          `;
+        }).join('');
+
+      } catch (error) {
+        container.className = '';
+        container.innerHTML = `
+          <div class="error">
+            <h3>❌ Lỗi tải bài viết</h3>
+            <p>${safeText(error.message)}</p>
+          </div>
+        `;
+      }
+    }
+
+    // ===== KHỞI ĐỘNG =====
+    loadBlogs();
+  </script>
 </body>
-
 </html>

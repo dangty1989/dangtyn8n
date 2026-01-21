@@ -1,70 +1,55 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<rss version="2.0" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+<rss version="2.0" 
+     xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" 
+     xmlns:content="http://purl.org/rss/1.0/modules/content/"
+     xmlns:googleplay="http://www.google.com/schemas/play-podcasts/1.0">
   <channel>
-    <title>Đặng Tỵ Podcast - AI &amp; Business Automation</title>
-    <link>https://dangtyn8n.io.vn</link>
-    <description>Chia sẻ kiến thức về AI Agent, n8n Automation và giải pháp quản lý thông minh cho doanh nghiệp SME.</description>
+    <title>DangTyn8n AI Agent &amp; Automation</title>
+    <link>https://dangtyn8n.site</link>
+    <description>Chia sẻ thực chiến về AI Agent, n8n và Tự động hóa trong doanh nghiệp Xây dựng.</description>
     <language>vi</language>
-    <copyright>2026 Đặng Tỵ</copyright>
-    <itunes:author>Đặng Tỵ</itunes:author>
-    <itunes:summary>Chào mừng bạn đến với kênh Podcast của Đặng Tỵ. Nơi chúng ta cùng nhau khám phá sức mạnh của AI Agent, n8n và các hệ thống tự động hóa thực chiến giúp doanh nghiệp bứt phá.</itunes:summary>
-    <itunes:type>episodic</itunes:type>
-    <itunes:owner>
-      <itunes:name>Đặng Tỵ</itunes:name>
-      <itunes:email>dangducty@gmail.com</itunes:email>
-    </itunes:owner>
-    <itunes:explicit>no</itunes:explicit>
-    <itunes:image href="https://dangtyn8n.io.vn/assets/images/podcast-cover.jpg"/>
-    <itunes:category text="Technology">
-      <itunes:category text="Software How-To"/>
-    </itunes:category>
-    <itunes:category text="Business">
-      <itunes:category text="Management"/>
-    </itunes:category>
+    <copyright>Copyright 2026 DangTyn8n</copyright>
+    <lastBuildDate>Wed, 21 Jan 2026 20:00:00 +0700</lastBuildDate>
+    <pubDate>Wed, 21 Jan 2026 20:00:00 +0700</pubDate>
+    <webMaster>email@example.com (Dang Ty)</webMaster>
+    
+    <!-- Artwork Podcast (Bắt buộc 1400x1400 đến 3000x3000, jpg/png) -->
+    <itunes:image href="https://dangtyn8n.site/assets/images/podcast-cover.jpg"/>
     <image>
-      <url>https://dangtyn8n.io.vn/assets/images/podcast-cover.jpg</url>
-      <title>Đặng Tỵ Podcast</title>
-      <link>https://dangtyn8n.io.vn</link>
+      <url>https://dangtyn8n.site/assets/images/podcast-cover.jpg</url>
+      <title>DangTyn8n AI Agent</title>
+      <link>https://dangtyn8n.site</link>
     </image>
 
-    <item>
-      <title>Tập 1: n8n Là Gì? Cách Dùng n8n Để Tự Động Hoá Kinh Doanh</title>
-      <link>https://dangtyn8n.io.vn/blog/ai-agent-n8n-huong-dan</link>
-      <guid isPermaLink="false">dangtyn8n-podcast-ep-1</guid>
-      <pubDate>Wed, 15 Jan 2026 10:00:00 +0700</pubDate>
-      <description><![CDATA[Trong tập này, chúng ta sẽ định nghĩa n8n là gì và tại sao nó lại là công cụ quan trọng nhất trong tech-stack của một Automation Specialist.]]></description>
-      <itunes:episodeType>full</itunes:episodeType>
-      <itunes:episode>1</itunes:episode>
-      <itunes:author>Đặng Tỵ</itunes:author>
-      <itunes:summary>Khám phá n8n - Trái tim của mọi hệ thống tự động hóa doanh nghiệp hiện đại.</itunes:summary>
-      <itunes:explicit>no</itunes:explicit>
-      <itunes:duration>40:00</itunes:duration>
-      <itunes:image href="https://dangtyn8n.io.vn/assets/images/blog-1.jpg"/>
-      <enclosure url="https://dangtyn8n.io.vn/assets/audio/ep1-n8n-intro.mp3" length="48000000" type="audio/mpeg"/>
-    </item>
-  
-    <item>
-      <title>Bẻ nhỏ cách xây AI Agent n8n</title>
-      <description><![CDATA[Podcast: Bẻ nhỏ cách xây AI Agent n8n. Được tải lên tự động từ Google Drive vào ngày 18/1/2026.]]></description>
-      <pubDate>Sun, 18 Jan 2026 00:00:00 GMT</pubDate>
-      <enclosure url="https://drive.google.com/uc?export=download&id=1SgDNqk05RES8TN4TkFlZg6ixVegoQmmC" length="1" type="audio/mpeg" />
-      <guid isPermaLink="false">ep-be-nho-cach-xay-ai-agent-n8n-524201</guid>
-      <itunes:duration>15:00</itunes:duration>
-      <itunes:episodeType>full</itunes:episodeType>
-      <itunes:explicit>false</itunes:explicit>
-    </item>
-  
-    <item>
-      <title>Bẻ nhỏ cách xây AI Agent n8n</title>
-      <description><![CDATA[Podcast: Bẻ nhỏ cách xây AI Agent n8n. 
+    <!-- Metadata iTunes/Spotify -->
+    <itunes:author>Dang Ty</itunes:author>
+    <itunes:summary>Chia sẻ thực chiến về AI Agent...</itunes:summary>
+    <itunes:category text="Technology"/>
+    <itunes:category text="Business">
+        <itunes:category text="Careers"/>
+    </itunes:category>
+    <itunes:explicit>false</itunes:explicit>
+    <itunes:owner>
+      <itunes:name>Dang Ty</itunes:name>
+      <itunes:email>email@example.com</itunes:email>
+    </itunes:owner>
 
-Được tải lên tự động từ hệ thống n8n & Google Drive vào ngày 18/1/2026.]]></description>
-      <pubDate>Sun, 18 Jan 2026 00:00:00 GMT</pubDate>
-      <enclosure url="https://drive.google.com/uc?export=download&id=1SgDNqk05RES8TN4TkFlZg6ixVegoQmmC" length="1" type="audio/mpeg" />
-      <guid isPermaLink="false">ep-be-nho-cach-xay-ai-agent-n8n-229671</guid>
-      <itunes:duration>15:00</itunes:duration>
-      <itunes:episodeType>full</itunes:episodeType>
+    <!-- EPISODE ITEM -->
+    <item>
+      <title>Bẻ nhỏ cách xây AI Agent n8n</title>
+      <link>https://dangtyn8n.site/podcast/episode-1</link>
+      <guid isPermaLink="false">dangtyn8n-ep-1</guid>
+      <description>Podcast: Bẻ nhỏ cách xây AI Agent n8n...</description>
+      <pubDate>Sun, 18 Jan 2026 09:00:00 +0700</pubDate>
+      
+      <!-- QUAN TRỌNG: Link Audio -->
+      <!-- Link Google Drive PHẢI là dạng Direct Stream -->
+      <enclosure url="https://docs.google.com/uc?export=open&amp;id=FILE_ID_CUA_BAN" length="12345678" type="audio/mpeg"/>
+      
+      <itunes:duration>900</itunes:duration> <!-- Giây -->
       <itunes:explicit>false</itunes:explicit>
+      <itunes:image href="https://dangtyn8n.site/assets/images/ep1-cover.jpg"/>
     </item>
+
   </channel>
 </rss>

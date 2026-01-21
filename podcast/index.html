@@ -8,7 +8,6 @@
     <style>
         :root {
             --primary: #facc15;
-            /* Safety Yellow */
             --primary-dark: #ca8a04;
             --slate-900: #0f172a;
             --slate-800: #1e293b;
@@ -125,10 +124,16 @@
             font-size: 1rem;
         }
 
+        /* Custom Audio Player Styling */
         audio {
             width: 100%;
-            height: 40px;
+            height: 45px;
             border-radius: 0.5rem;
+            outline: none;
+        }
+
+        audio::-webkit-media-controls-panel {
+            background-color: var(--slate-700);
         }
 
         .back-home {
@@ -149,6 +154,15 @@
             padding: 4rem;
             font-size: 1.25rem;
             color: var(--text-muted);
+        }
+
+        .error {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid #ef4444;
+            color: #fca5a5;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            text-align: center;
         }
 
         @media (max-width: 768px) {
@@ -190,17 +204,50 @@
 
     <script src="../data/posts-data.js"></script>
     <script>
+        // ===== CONSTANTS =====
+        const GOOGLE_DRIVE_REGEX = /https:\/\/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/;
+
+        // ===== UTILITIES =====
+        function convertGoogleDriveLink(url) {
+            // Kiểm tra nếu đã là direct link thì giữ nguyên
+            if (url.includes('docs.google.com/uc?')) return url;
+            
+            // Extract file ID từ sharing link
+            const match = url.match(GOOGLE_DRIVE_REGEX);
+            if (match && match[1]) {
+                const fileId = match[1];
+                // Format streaming (tốt cho podcast dài)
+                return `https://docs.google.com/uc?export=open&id=${fileId}`;
+            }
+            
+            // Nếu không match, trả về original (có thể là URL khác)
+            return url;
+        }
+
+        function escapeHtml(str) {
+            return String(str ?? '')
+                .replaceAll('&', '&amp;')
+                .replaceAll('<', '&lt;')
+                .replaceAll('>', '&gt;')
+                .replaceAll('"', '&quot;')
+                .replaceAll("'", '&#039;');
+        }
+
+        // ===== MAIN FUNCTION =====
         async function loadPodcasts() {
             const container = document.getElementById('podcastContainer');
+            
             try {
                 let data;
+
+                // 1) Ưu tiên fetch file JSON
                 try {
                     const response = await fetch('../data/podcast-episodes.json');
                     if (response.ok) {
                         data = await response.json();
                     }
                 } catch (e) {
-                    console.warn('Podcast fetch failed, using local data fallback');
+                    console.warn('⚠️ Podcast fetch failed, using local data fallback', e);
                     data = window.PODCAST_DATA;
                 }
 
@@ -209,32 +256,51 @@
                 const episodes = data.episodes || data;
 
                 if (episodes.length === 0) {
-                    container.innerHTML = '<p style="text-align: center;">Chưa có tập podcast nào được xuất bản.</p>';
+                    container.className = '';
+                    container.innerHTML = '<p class="error">📭 Chưa có tập podcast nào được xuất bản.</p>';
                     return;
                 }
 
+                // Sort theo ngày mới nhất
+                episodes.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+                // ===== RENDER PODCAST GRID =====
                 container.className = 'podcast-grid';
-                container.innerHTML = episodes.map(ep => `
-                    <div class="podcast-card animate-fade-in">
-                        <div class="podcast-icon">🎙️</div>
-                        <div class="podcast-info">
-                            <div class="podcast-meta">${ep.date} • ${ep.duration} phút</div>
-                            <h2 class="podcast-title">${ep.title}</h2>
-                            <p class="podcast-desc">${ep.description}</p>
-                            <audio controls>
-                                <source src="${ep.audioUrl}" type="audio/mpeg">
-                                Trình duyệt của bạn không hỗ trợ phát âm thanh.
-                            </audio>
+                container.innerHTML = episodes.map(ep => {
+                    // Convert Google Drive link sang direct link
+                    const audioUrl = convertGoogleDriveLink(ep.audioUrl);
+                    
+                    return `
+                        <div class="podcast-card">
+                            <div class="podcast-icon">🎙️</div>
+                            <div class="podcast-info">
+                                <div class="podcast-meta">${escapeHtml(ep.date)} • ${escapeHtml(ep.duration)} phút</div>
+                                <h2 class="podcast-title">${escapeHtml(ep.title)}</h2>
+                                <p class="podcast-desc">${escapeHtml(ep.description)}</p>
+                                
+                                <!-- Audio Player với direct link -->
+                                <audio 
+                                    controls 
+                                    preload="metadata"
+                                    onloadstart="console.log('Loading:', '${escapeHtml(ep.title)}')"
+                                    onerror="console.error('Audio load failed:', this.src); this.parentElement.innerHTML += '<p style=\\'color:#ef4444; margin-top:10px;\\'>⚠️ Không thể tải audio. Kiểm tra quyền truy cập Google Drive.</p>';"
+                                >
+                                    <source src="${audioUrl}" type="audio/mpeg">
+                                    Trình duyệt của bạn không hỗ trợ phát âm thanh.
+                                </audio>
+                            </div>
                         </div>
-                    </div>
-                `).join('');
+                    `;
+                }).join('');
 
             } catch (error) {
-                console.error(error);
-                container.innerHTML = `<p style="color: #ef4444; text-align: center;">❌ Lỗi: ${error.message}</p>`;
+                console.error('❌ Error:', error);
+                container.className = '';
+                container.innerHTML = `<div class="error"><h3>❌ Lỗi tải podcast</h3><p>${escapeHtml(error.message)}</p></div>`;
             }
         }
 
+        // ===== KHỞI ĐỘNG =====
         document.addEventListener('DOMContentLoaded', loadPodcasts);
     </script>
 </body>
